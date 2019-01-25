@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.Model;
+package com.mystudio.dungeon_adventure.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import java.util.Map;
  */
 public class CardDeck {
 
-    // maps of the three card objects
-    private Map<Integer, AttackCard> attackStack;
-    private Map<Integer, SkillCard> skillStack;
-    private Map<Integer, PowerCard> powerStack;
+    // maps of the three card objects, <cardID, Card>
+    private Map<Integer, CardAttack> attackStack;
+    private Map<Integer, CardSkill> skillStack;
+    private Map<Integer, CardPower> powerStack;
 
     // arrayList of card ID's
     // this will be the "deck". Cards will be drawn by ID from the 3 maps by this
@@ -23,9 +23,9 @@ public class CardDeck {
      * initialize collection types
      */
     public CardDeck() {
-        this.attackStack = new HashMap<Integer, AttackCard>();
-        this.skillStack = new HashMap<Integer, SkillCard>();
-        this.powerStack = new HashMap<Integer, PowerCard>();
+        this.attackStack = new HashMap<Integer, CardAttack>();
+        this.skillStack = new HashMap<Integer, CardSkill>();
+        this.powerStack = new HashMap<Integer, CardPower>();
         this.cardDeck = new ArrayList<Integer>();
     }
 

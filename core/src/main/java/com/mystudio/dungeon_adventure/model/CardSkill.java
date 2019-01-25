@@ -1,12 +1,12 @@
-package com.mystudio.dungeon_adventure.Model;
+package com.mystudio.dungeon_adventure.model;
 
 /**
  * Child class of CarBase. Skills.
  * @author Maximilian Bleggi
  */
-public class SkillCard extends CardBase {
+public class CardSkill extends CardBase {
 
-    public SkillCard(int pwrCost, String desc, String title) {
+    public CardSkill(int pwrCost, String desc, String title) {
         super.powerCost = pwrCost;
         super.description = desc;
         super.title = title;

@@ -1,12 +1,12 @@
-package com.mystudio.dungeon_adventure.Model;
+package com.mystudio.dungeon_adventure.model;
 
 /**
  * Child class of CarBase. Powers.
  * @author Maximilian Bleggi
  */
-public class PowerCard extends CardBase {
+public class CardPower extends CardBase {
 
-    public PowerCard(int pwrCost, String desc, String title) {
+    public CardPower(int pwrCost, String desc, String title) {
         super.powerCost = pwrCost;
         super.description = desc;
         super.title = title;

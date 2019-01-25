@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.Model;
+package com.mystudio.dungeon_adventure.model;
 
 /**
  * The base class for a player.

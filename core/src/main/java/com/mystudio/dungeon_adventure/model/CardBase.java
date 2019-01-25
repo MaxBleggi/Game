@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.Model;
+package com.mystudio.dungeon_adventure.model;
 
 /**
  * The base card class for all card types
@@ -9,6 +9,8 @@ public class CardBase {
     protected int powerCost;
     protected String description;
     protected String title;
+
+    // cannot update after creation
     // unique ID for this individual card to be identified
     protected int cardID;
     // each type of card also a an ID attached
