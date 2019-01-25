@@ -9,6 +9,10 @@ public class CardBase {
     protected int powerCost;
     protected String description;
     protected String title;
+    // unique ID for this individual card to be identified
+    protected int cardID;
+    // each type of card also a an ID attached
+    protected int cardTypeID;
 
     /* TODO: hold image of card here */
 
@@ -64,5 +68,21 @@ public class CardBase {
      */
     public String getTitle() {
         return this.title;
+    }
+
+    /**
+     * Retrieves unique ID of card
+     * @return ID of card
+     */
+    public int getCardID() {
+        return this.cardID;
+    }
+
+    /**
+     * Retrieves card ID type
+     * @return card ID type
+     */
+    public int getCardTypeID() {
+        return this.cardTypeID;
     }
 }
