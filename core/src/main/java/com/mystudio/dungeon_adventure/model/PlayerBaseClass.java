@@ -7,6 +7,8 @@ package com.mystudio.dungeon_adventure.model;
  */
 public class PlayerBaseClass {
 
+    protected static final int MAX_HAND_SIZE = 12;
+
     /**
      * Fundamental attributes shared by all player classes
      */
@@ -17,10 +19,15 @@ public class PlayerBaseClass {
 
     protected int defaultHandSize;
     protected int currentHandSize;
-    protected int maxHandSize;
 
     protected int defaultPower;
     protected int currentPower;
+
+    // player's inventory
+    protected PlayerInventory inventory;
+
+    // player's card deck
+    protected CardDeck cardDeck;
 
 
     public PlayerBaseClass(){
@@ -151,16 +158,6 @@ public class PlayerBaseClass {
     }
 
     /**
-     * Updates player's max hand size for cards
-     * @param sizeDelta the change in hand size
-     * @return player's current max hand size
-     */
-    public int updateMaxHandSize(int sizeDelta) {
-        this.maxHandSize += sizeDelta;
-        return this.maxHandSize;
-    }
-
-    /**
      * Updates player's current hand size for cards
      * @param sizeDelta the change in hand size
      * @return player's current hand size
@@ -183,7 +180,7 @@ public class PlayerBaseClass {
      * @return player's max hand size
      */
     public int getMaxHandSize() {
-        return this.maxHandSize;
+        return this.MAX_HAND_SIZE;
     }
 
     /**
