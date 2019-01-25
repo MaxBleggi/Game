@@ -2,7 +2,7 @@ package com.mystudio.dungeon_adventure.Model;
 
 /**
  * The base class for a player.
- * All future
+ * All playable classes are children of this class
  * @author Maximilian Bleggi
  */
 public class PlayerBaseClass {
@@ -11,9 +11,17 @@ public class PlayerBaseClass {
      * Fundamental attributes shared by all player classes
      */
     protected String name;
+
     protected int currentHP;
     protected int maxHP;
+
     protected int defaultHandSize;
+    protected int currentHandSize;
+    protected int maxHandSize;
+
+    protected int defaultPower;
+    protected int currentPower;
+
 
     public PlayerBaseClass(){
         // this class will never be instantiated directly, only extended
@@ -24,7 +32,7 @@ public class PlayerBaseClass {
      * @param hpDelta the change in hp
      * @return updated hp level, returns -1 if player has died
      */
-    public int updateHP(int hpDelta) {
+    public int updateCurrentHP(int hpDelta) {
         // ensure hp does not go above max hp
         this.currentHP += hpDelta;
 
@@ -69,6 +77,49 @@ public class PlayerBaseClass {
         return this.maxHP;
     }
 
+
+
+
+    /**
+     * Updates default power for a player
+     * @param powerDelta the change in default power
+     * @return current default power
+     */
+    public int updateDefaultPower(int powerDelta) {
+        this.defaultPower += powerDelta;
+        return this.defaultPower;
+    }
+
+    /**
+     * Updates current power for a player, can exceed max power
+     * @param powerDelta the change in default power
+     * @return current power
+     */
+    public int updateCurrentPower(int powerDelta) {
+        this.currentPower += currentPower;
+        return this.currentPower;
+    }
+
+    /**
+     * Retrieves default power of player
+     * @return default power value
+     */
+    public int getDefaultPower() {
+        return this.defaultPower;
+    }
+
+    /**
+     * Retrieves current power of player
+     * @return current power value
+     */
+    public int getCurrentPower() {
+        return this.currentPower;
+    }
+
+
+
+
+
     /**
      * Sets the player's name
      * @param name player's name
@@ -85,8 +136,12 @@ public class PlayerBaseClass {
         return this.name;
     }
 
+
+
+
+
     /**
-     * Update player's max hand size for cards
+     * Updates player's max hand size for cards
      * @param sizeDelta the change in hand size
      * @return player's current max hand size
      */
@@ -96,10 +151,46 @@ public class PlayerBaseClass {
     }
 
     /**
+     * Updates player's max hand size for cards
+     * @param sizeDelta the change in hand size
+     * @return player's current max hand size
+     */
+    public int updateMaxHandSize(int sizeDelta) {
+        this.maxHandSize += sizeDelta;
+        return this.maxHandSize;
+    }
+
+    /**
+     * Updates player's current hand size for cards
+     * @param sizeDelta the change in hand size
+     * @return player's current hand size
+     */
+    public int updateCurrentHandSize(int sizeDelta) {
+        this.currentHandSize += sizeDelta;
+        return this.currentHandSize;
+    }
+
+    /**
      * Retrieve player's default hand size
      * @return player's default hand size
      */
     public int getDefaultHandSize() {
         return this.defaultHandSize;
+    }
+
+    /**
+     * Retrieves player's max hand size
+     * @return player's max hand size
+     */
+    public int getMaxHandSize() {
+        return this.maxHandSize;
+    }
+
+    /**
+     * Retrieve player's current hand size
+     * @return player's current hand size
+     */
+    public int getCurrentHandSize() {
+        return this.currentHandSize;
     }
 }
