@@ -3,31 +3,27 @@ package com.mystudio.dungeon_adventure;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.mystudio.dungeon_adventure.view.DungeonMap;
+import com.mystudio.dungeon_adventure.view.LoadingScreen;
 import org.mini2Dx.core.game.BasicGame;
+import org.mini2Dx.core.game.ScreenBasedGame;
 import org.mini2Dx.core.graphics.Graphics;
 
-public class DungeonAdventure extends BasicGame {
+public class DungeonAdventure extends ScreenBasedGame {
 	public static final String GAME_IDENTIFIER = "com.mystudio.dungeon_adventure";
-
-	private Texture texture;
 	
 	@Override
     public void initialise() {
-    	texture = new Texture("mini2Dx.png");
+	    // initialize data here
+    	// add screens
+        this.addScreen(new LoadingScreen());
+        this.addScreen(new DungeonMap());
+
     }
-    
+
     @Override
-    public void update(float delta) {
-    
-    }
-    
-    @Override
-    public void interpolate(float alpha) {
-    
-    }
-    
-    @Override
-    public void render(Graphics g) {
-		g.drawTexture(texture, 0f, 0f);
+    public int getInitialScreenId() {
+	    // initial screen of game
+        return LoadingScreen.ID;
     }
 }
