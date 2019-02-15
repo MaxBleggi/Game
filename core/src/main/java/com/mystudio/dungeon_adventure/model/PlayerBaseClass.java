@@ -12,6 +12,11 @@ public class PlayerBaseClass {
     /**
      * Fundamental attributes shared by all player classes
      */
+    public static boolean leftMove;
+    public static boolean rightMove;
+    public static boolean upMove;
+    public static boolean downMove;
+
     protected String name;
 
     protected int currentHP;
@@ -190,4 +195,7 @@ public class PlayerBaseClass {
     public int getCurrentHandSize() {
         return this.currentHandSize;
     }
+
+
+
 }
