@@ -1,5 +1,8 @@
 package com.mystudio.dungeon_adventure.model;
 
+import org.mini2Dx.core.engine.geom.CollisionPoint;
+import org.mini2Dx.core.graphics.Sprite;
+
 /**
  * The base class for a player.
  * All playable classes are children of this class
@@ -12,6 +15,13 @@ public class PlayerBaseClass {
     /**
      * Fundamental attributes shared by all player classes
      */
+    public static boolean leftMove;
+    public static boolean rightMove;
+    public static boolean upMove;
+    public static boolean downMove;
+    public static boolean inventoryOpen;
+
+
     protected String name;
 
     protected int currentHP;
@@ -22,6 +32,9 @@ public class PlayerBaseClass {
 
     protected int defaultPower;
     protected int currentPower;
+
+    protected Sprite playerSprite;
+    protected CollisionPoint cPoint;
 
     // player's inventory
     protected PlayerInventory inventory;
@@ -190,4 +203,43 @@ public class PlayerBaseClass {
     public int getCurrentHandSize() {
         return this.currentHandSize;
     }
+
+    public float getPlayerXmove() {
+        float xMove = 0f;
+
+        if (PlayerBaseClass.leftMove) {
+            xMove = -2f;
+        }
+        if (PlayerBaseClass.rightMove) {
+            xMove = 2f;
+        }
+
+        return xMove;
+    }
+
+    public float getPlayerYmove() {
+        float yMove = 0f;
+
+        if (PlayerBaseClass.upMove) {
+            yMove = -2f;
+        }
+        if (PlayerBaseClass.downMove) {
+            yMove = 2f;
+        }
+
+        return yMove;
+    }
+
+    public boolean isInventoryOPen() {
+        return this.inventoryOpen;
+    }
+
+    public CollisionPoint getCollisionPoint() {
+        return this.cPoint;
+    }
+
+    public Sprite getPlayerSprite() {
+        return this.playerSprite;
+    }
+
 }

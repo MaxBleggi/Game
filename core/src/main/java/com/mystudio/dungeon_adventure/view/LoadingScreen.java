@@ -14,8 +14,8 @@ public class LoadingScreen extends BasicGameScreen {
     public static final int ID = 1;
 
     // the amount of time this screen will last until loading to next screen
-    // 4 seconds
-    private float loadingTime = 4f;
+    // 2 seconds
+    private float loadingTime = 2f;
 
     @Override
     public void initialise(GameContainer gc) {
@@ -23,7 +23,6 @@ public class LoadingScreen extends BasicGameScreen {
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
-        System.out.println("gets here");
         if (loadingTime > 0f) {
 
             // countdown the time
@@ -32,7 +31,7 @@ public class LoadingScreen extends BasicGameScreen {
             // when 4 seconds pass
             if (loadingTime < 0f) {
                 // fade to the in game screen
-                screenManager.enterGameScreen(DungeonMap.ID, new FadeOutTransition(), new FadeInTransition());
+                screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
             }
         }
     }
@@ -45,7 +44,6 @@ public class LoadingScreen extends BasicGameScreen {
     @Override
     public void render(GameContainer gc, Graphics g) {
         g.drawString("Loading game...", 32, 32);
-        g.drawCircle(3f,3f,4f);
     }
 
     @Override
