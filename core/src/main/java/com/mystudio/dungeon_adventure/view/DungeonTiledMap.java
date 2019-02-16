@@ -20,8 +20,8 @@ public class DungeonTiledMap extends TiledMap {
     protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
                                    int heightInTiles) {
 
-        if (layer.getName().compareTo("COLLISIONS") == 0) {
-            // TODO: render sprites between layers here
+        if (layer.getName().compareTo("Floor") == 0) {
+
 
         }
     }

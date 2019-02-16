@@ -33,6 +33,10 @@ public class InputHandler implements InputProcessor {
                 PlayerBaseClass.rightMove = true;
                 keyPressedDown = true;
                 break;
+            case Input.Keys.I:
+                PlayerBasicClass.inventoryOpen = true;
+                keyPressedDown = true;
+                break;
         }
 
         return keyPressedDown;
@@ -63,6 +67,10 @@ public class InputHandler implements InputProcessor {
                 break;
             case Input.Keys.D:
                 PlayerBaseClass.rightMove = false;
+                keyPressedUp = true;
+                break;
+            case Input.Keys.I:
+                PlayerBasicClass.inventoryOpen = false;
                 keyPressedUp = true;
                 break;
         }

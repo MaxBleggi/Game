@@ -44,7 +44,6 @@ public class LoadingScreen extends BasicGameScreen {
     @Override
     public void render(GameContainer gc, Graphics g) {
         g.drawString("Loading game...", 32, 32);
-        g.drawCircle(3f,3f,4f);
     }
 
     @Override

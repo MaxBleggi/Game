@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.InputHandler;
 import com.mystudio.dungeon_adventure.model.PlayerBaseClass;
+import com.mystudio.dungeon_adventure.model.PlayerBasicClass;
 import org.mini2Dx.core.collisions.QuadTree;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.game.GameContainer;
@@ -22,7 +23,13 @@ public class DungeonScreen extends BasicGameScreen {
     public static final int ID = 2;
     private DungeonTiledMap tiledMap;
     private InputHandler inputProcessor;
+    private PlayerBasicClass player;
 
+    private final int WINDOW_WIDTH = 800;
+    private final int WINDOW_HEIGHT = 600;
+    private final int TILE_SIZE = 16;
+    private final int TILED_HEIGHT = 16*500;
+    private final int TILED_WIDTH = 16*500;
 
     private byte[][] collisions;
 
@@ -33,54 +40,45 @@ public class DungeonScreen extends BasicGameScreen {
     public void initialise(GameContainer gc) {
         // attempt to load the map
         try {
-            this.tiledMap = new DungeonTiledMap(Gdx.files.internal("test2.tmx"));
+            this.tiledMap = new DungeonTiledMap(Gdx.files.internal("test1.tmx"));
         }
         catch (IOException e) {
             e.printStackTrace();
         }
 
-        this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, "Walls");
-      //  System.out.println(this.collisions.length);
+        this.player = new PlayerBasicClass("testName");
 
+        this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, "WallsLayer");
 
         // get user input handler
         this.inputProcessor = new InputHandler();
         Gdx.input.setInputProcessor(inputProcessor);
 
-        this.point = new CollisionPoint();
+        // aliase player sprite and cPoint
+        this.point = this.player.getCollisionPoint();
+        this.sprite = this.player.getPlayerSprite();
 
-
-        this.sprite = new Sprite(new Texture(Gdx.files.internal("player1.png")));
-        this.sprite.setSize(15,20);
-        this.sprite.setPosition(16*3, 16*3);
-        this.point.set(16*3,16*3);
+        this.point.set(TILE_SIZE*4,TILE_SIZE*4);
     }
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+
+        // check if player opened inventory
+        if (this.player.isInventoryOPen()) {
+
+        }
+
+        
         //preUpdate() must be calculated before any changes are made to the CollisionPoint
         this.point.preUpdate();
 
-        float xMove = 0;
-        float yMove = 0;
-        if (PlayerBaseClass.upMove) {
-            yMove = -2f;
-        }
-        if (PlayerBaseClass.downMove) {
-            yMove = 2f;
-        }
-        if (PlayerBaseClass.leftMove) {
-            xMove = -2f;
-        }
-        if (PlayerBaseClass.rightMove) {
-            xMove = 2f;
-        }
+        float yMove = this.player.getPlayerYmove();
+        float xMove = this.player.getPlayerXmove();
 
         // check if next tile will be a collision
-        int nextXTile = (int)(this.point.getX() + xMove) / 16;
-        int nextYTile = (int)(this.point.getY() + yMove) / 16;
-        System.out.println("tile x: " + nextXTile);
-        System.out.println("tile y: " + nextYTile);
+        int nextXTile = (int)(this.point.getX() + xMove) / TILE_SIZE;
+        int nextYTile = (int)(this.point.getY() + yMove) / TILE_SIZE;
 
        if (collisions[nextXTile][nextYTile] == 0) {
             // Move the point by 4 pixels on the X and Y axis
@@ -103,17 +101,70 @@ public class DungeonScreen extends BasicGameScreen {
     @Override
     public void render(GameContainer gc, Graphics g) {
         g.setBackgroundColor(Color.WHITE);
-
+        int offsetX = 0;
+        int offSetY = 0;
 
         // draw tiled map at 0,0
-        tiledMap.draw(g, 0, 0);
+        int playerDistanceFromRightEdge = point.getRenderX() % WINDOW_WIDTH;
+        int playerDistanceFromBottomEdge = point.getRenderY() % WINDOW_HEIGHT;
 
-        g.drawSprite(sprite, point.getRenderX(), point.getRenderY());
+        offSetY = getOffsetY();
+        offsetX = getOffsetX();
 
+        int floorLayer = tiledMap.getLayerIndex("groundLayer");
+        int wallsLayer = tiledMap.getLayerIndex("WallsLayer");
+
+
+
+       // tiledMap.onLayerRendered(g, floor, point.getRenderX() + (-offsetX),point.getRenderY() + (-offSetY),1,1);
+
+        // draw floor
+        tiledMap.draw(g, -offsetX, -offSetY, floorLayer);
+
+        // draw sprites between ground and raised layers
+        g.drawSprite(sprite, point.getRenderX() + (-offsetX), point.getRenderY() + (-offSetY));
+
+        // draw wall layer
+        tiledMap.draw(g, -offsetX, -offSetY, wallsLayer);
     }
 
     @Override
     public int getId() {
         return ID;
+    }
+
+
+    public int getOffsetY() {
+        int playerY = point.getRenderY();
+        int offset = 0;
+
+        if (playerY >= WINDOW_HEIGHT) {
+            offset = WINDOW_HEIGHT;
+        }
+        if (playerY >= WINDOW_HEIGHT*2) {
+            offset = WINDOW_HEIGHT*2;
+        }
+        if (playerY >= WINDOW_HEIGHT*3) {
+            offset = WINDOW_HEIGHT*3;
+        }
+
+        return offset;
+    }
+
+    public int getOffsetX() {
+        int playerX = point.getRenderX();
+        int offset = 0;
+
+        if (playerX >= WINDOW_WIDTH) {
+            offset = WINDOW_WIDTH;
+        }
+        if (playerX >= WINDOW_WIDTH*2) {
+            offset = WINDOW_WIDTH*2;
+        }
+        if (playerX >= WINDOW_WIDTH*3) {
+            offset = WINDOW_WIDTH*3;
+        }
+
+        return offset;
     }
 }
