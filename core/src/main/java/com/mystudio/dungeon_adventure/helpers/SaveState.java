@@ -6,7 +6,7 @@ import javax.annotation.processing.FilerException;
 import java.io.*;
 
 public class SaveState {
-    public static final String PLAYER_SAVE_STATE = "player.json";
+    public static final String PLAYER_SAVE_STATE = "saveStates/player.json";
 
     public static int saveObject(Object serObj, String path) {
         try {
@@ -26,7 +26,7 @@ public class SaveState {
         return 1;
     }
 
-    public static Object readObject(String path) {
+    public static Object loadObject(String path) {
         try {
             FileInputStream fileInputStream = new FileInputStream(path);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);

@@ -23,7 +23,7 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         // get player info
-        PlayerBasicClass player = (PlayerBasicClass) SaveState.readObject(SaveState.PLAYER_SAVE_STATE);
+        PlayerBasicClass player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
 
     }
 

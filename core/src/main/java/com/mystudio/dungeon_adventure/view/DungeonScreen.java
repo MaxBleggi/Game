@@ -47,7 +47,7 @@ public class DungeonScreen extends BasicGameScreen {
         }
 
         // get player info
-        this.player = (PlayerBasicClass) SaveState.readObject(SaveState.PLAYER_SAVE_STATE);
+        this.player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
 
 
 
