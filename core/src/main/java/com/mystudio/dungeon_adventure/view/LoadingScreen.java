@@ -1,7 +1,10 @@
 package com.mystudio.dungeon_adventure.view;
 
+import com.mystudio.dungeon_adventure.helpers.SaveState;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.playerdata.PlayerDataException;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -19,6 +22,14 @@ public class LoadingScreen extends BasicGameScreen {
 
     @Override
     public void initialise(GameContainer gc) {
+        // if there isn't any previous player data
+        if (!SaveState.hasPreviousSaveState(SaveState.PLAYER_SAVE_STATE)) {
+            // create new player
+            PlayerBasicClass player = new PlayerBasicClass("New Player");
+
+            // save it
+            SaveState.saveObject(player, SaveState.PLAYER_SAVE_STATE);
+        }
     }
 
     @Override

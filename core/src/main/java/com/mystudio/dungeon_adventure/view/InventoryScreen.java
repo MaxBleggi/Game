@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure.view;
 
+import com.mystudio.dungeon_adventure.helpers.SaveState;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.BasicGameScreen;
@@ -20,8 +22,8 @@ public class InventoryScreen extends BasicGameScreen {
      */
     @Override
     public void initialise(GameContainer gc) {
-
-
+        // get player info
+        PlayerBasicClass player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
 
     }
 

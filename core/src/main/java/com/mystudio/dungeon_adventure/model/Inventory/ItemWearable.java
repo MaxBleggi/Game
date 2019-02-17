@@ -3,7 +3,9 @@ package com.mystudio.dungeon_adventure.model.Inventory;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 
-public class ItemWearable extends ItemBase {
+import java.io.Serializable;
+
+public class ItemWearable extends ItemBase implements Serializable {
 
     private Wearables bodyPart;
 
