@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.model;
+package com.mystudio.dungeon_adventure.model.Cards;
 
 import java.util.ArrayList;
 import java.util.HashMap;

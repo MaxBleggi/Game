@@ -2,8 +2,8 @@ package com.mystudio.dungeon_adventure.helpers;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.mystudio.dungeon_adventure.model.PlayerBaseClass;
-import com.mystudio.dungeon_adventure.model.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBaseClass;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 
 public class InputHandler implements InputProcessor {
     /**

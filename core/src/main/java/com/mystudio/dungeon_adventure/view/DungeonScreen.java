@@ -2,11 +2,8 @@ package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.InputHandler;
-import com.mystudio.dungeon_adventure.model.PlayerBaseClass;
-import com.mystudio.dungeon_adventure.model.PlayerBasicClass;
-import org.mini2Dx.core.collisions.QuadTree;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -14,7 +11,8 @@ import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
-import org.mini2Dx.tiled.TileLayer;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.tiled.collisions.TiledCollisionMapper;
 
 import java.io.IOException;
@@ -66,7 +64,8 @@ public class DungeonScreen extends BasicGameScreen {
 
         // check if player opened inventory
         if (this.player.isInventoryOPen()) {
-
+            // navigate to inventory screen
+            screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
         }
 
         
