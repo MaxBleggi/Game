@@ -1,10 +1,12 @@
 package com.mystudio.dungeon_adventure.model.Cards;
 
+import java.io.Serializable;
+
 /**
  * The base card class for all card types
  * @author Maximilian Bleggi
  */
-public class CardBase {
+public class CardBase implements Serializable {
 
     protected int powerCost;
     protected String description;

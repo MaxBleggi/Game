@@ -3,6 +3,7 @@ package com.mystudio.dungeon_adventure.model.Inventory;
 import com.mystudio.dungeon_adventure.helpers.ReturnValues;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * The player's inventory
  * @author Maximilian Bleggi
  */
-public class PlayerInventory {
+public class PlayerInventory implements Serializable {
 
     private final int DEFAULT_INVENTORY_SIZE = 20;
 

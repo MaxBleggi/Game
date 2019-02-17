@@ -2,7 +2,9 @@ package com.mystudio.dungeon_adventure.model.Inventory;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
 
-public class ItemBase {
+import java.io.Serializable;
+
+public class ItemBase implements Serializable {
 
     protected Rarity rarityLevel;
     protected String title;

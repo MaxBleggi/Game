@@ -2,7 +2,9 @@ package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.InputHandler;
+import com.mystudio.dungeon_adventure.helpers.SaveState;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.game.GameContainer;
@@ -44,7 +46,10 @@ public class DungeonScreen extends BasicGameScreen {
             e.printStackTrace();
         }
 
-        this.player = new PlayerBasicClass("testName");
+        // get player info
+        this.player = (PlayerBasicClass) SaveState.readObject(SaveState.PLAYER_SAVE_STATE);
+
+
 
         this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, "WallsLayer");
 
@@ -52,10 +57,10 @@ public class DungeonScreen extends BasicGameScreen {
         this.inputProcessor = new InputHandler();
         Gdx.input.setInputProcessor(inputProcessor);
 
-        // aliase player sprite and cPoint
-        this.point = this.player.getCollisionPoint();
-        this.sprite = this.player.getPlayerSprite();
+        this.point = new CollisionPoint();
+        this.sprite = new Sprite(new Texture(Gdx.files.internal(this.player.getTexture())));
 
+        sprite.setSize(15,20);
         this.point.set(TILE_SIZE*4,TILE_SIZE*4);
     }
 

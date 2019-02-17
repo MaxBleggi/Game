@@ -4,13 +4,16 @@ import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
 import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.core.serialization.annotation.Field;
+
+import java.io.Serializable;
 
 /**
  * The base class for a player.
  * All playable classes are children of this class
  * @author Maximilian Bleggi
  */
-public class PlayerBaseClass {
+public class PlayerBaseClass implements Serializable {
 
     protected static final int MAX_HAND_SIZE = 12;
 
@@ -23,7 +26,6 @@ public class PlayerBaseClass {
     public static boolean downMove;
     public static boolean inventoryOpen;
 
-
     protected String name;
 
     protected int currentHP;
@@ -34,8 +36,7 @@ public class PlayerBaseClass {
 
     protected int defaultPower;
     protected int currentPower;
-
-    protected Sprite playerSprite;
+    protected String spriteName;
     protected CollisionPoint cPoint;
 
     // player's inventory
@@ -225,14 +226,6 @@ public class PlayerBaseClass {
 
     public boolean isInventoryOPen() {
         return this.inventoryOpen;
-    }
-
-    public CollisionPoint getCollisionPoint() {
-        return this.cPoint;
-    }
-
-    public Sprite getPlayerSprite() {
-        return this.playerSprite;
     }
 
 }

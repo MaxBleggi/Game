@@ -3,7 +3,9 @@ package com.mystudio.dungeon_adventure.model.Inventory;
 import com.mystudio.dungeon_adventure.helpers.Actionables;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
 
-public class ItemActionable extends ItemBase {
+import java.io.Serializable;
+
+public class ItemActionable extends ItemBase implements Serializable {
     private Actionables type;
 
     public ItemActionable(int itemID, int itemTypeID, String title, String desc, Rarity rarity, Actionables type) {

@@ -1,5 +1,6 @@
 package com.mystudio.dungeon_adventure.model.Cards;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
  * The player's Deck of Cards.
  * @author Maximilian Bleggi
  */
-public class CardDeck {
+public class CardDeck implements Serializable {
 
     // maps of the three card objects, <cardID, Card>
     private Map<Integer, CardAttack> attackStack;
