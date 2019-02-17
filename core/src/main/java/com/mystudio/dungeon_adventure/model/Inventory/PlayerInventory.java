@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.model;
+package com.mystudio.dungeon_adventure.model.Inventory;
 
 import com.mystudio.dungeon_adventure.helpers.ReturnValues;
 import com.mystudio.dungeon_adventure.helpers.Wearables;

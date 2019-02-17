@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.model;
+package com.mystudio.dungeon_adventure.model.Cards;
 
 /**
  * The base card class for all card types

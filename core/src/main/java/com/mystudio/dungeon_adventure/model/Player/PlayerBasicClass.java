@@ -1,7 +1,9 @@
-package com.mystudio.dungeon_adventure.model;
+package com.mystudio.dungeon_adventure.model.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
+import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.graphics.Sprite;
 

@@ -1,5 +1,7 @@
-package com.mystudio.dungeon_adventure.model;
+package com.mystudio.dungeon_adventure.model.Player;
 
+import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
+import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.graphics.Sprite;
 
@@ -98,8 +100,6 @@ public class PlayerBaseClass {
     }
 
 
-
-
     /**
      * Updates default power for a player
      * @param powerDelta the change in default power
@@ -136,10 +136,6 @@ public class PlayerBaseClass {
         return this.currentPower;
     }
 
-
-
-
-
     /**
      * Sets the player's name
      * @param name player's name
@@ -155,9 +151,6 @@ public class PlayerBaseClass {
     public String getName() {
         return this.name;
     }
-
-
-
 
 
     /**
