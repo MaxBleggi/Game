@@ -19,22 +19,23 @@ public class InputHandler implements InputProcessor {
         switch (keycode) {
             case Input.Keys.A:
                 keyPressedDown = true;
-                PlayerBaseClass.leftMove = true;
+                GameAttributes.PLAYER_MOVING_LEFT = true;
                 break;
             case Input.Keys.W:
                 keyPressedDown = true;
-                PlayerBaseClass.upMove = true;
+                GameAttributes.PLAYER_MOVING_UP = true;
                 break;
             case Input.Keys.S:
-                PlayerBaseClass.downMove = true;
+                GameAttributes.PLAYER_MOVING_DOWN = true;
                 keyPressedDown = true;
                 break;
             case Input.Keys.D:
-                PlayerBaseClass.rightMove = true;
+                GameAttributes.PLAYER_MOVING_RIGHT = true;
                 keyPressedDown = true;
                 break;
             case Input.Keys.I:
-                PlayerBasicClass.inventoryOpen = true;
+                // inventory is toggle-able (switch to opposite state each button press)
+                GameAttributes.PLAYER_INVENTORY_OPEN = !GameAttributes.PLAYER_INVENTORY_OPEN;
                 keyPressedDown = true;
                 break;
         }
@@ -55,22 +56,18 @@ public class InputHandler implements InputProcessor {
         switch (keycode) {
             case Input.Keys.A:
                 keyPressedUp = true;
-                PlayerBaseClass.leftMove = false;
+                GameAttributes.PLAYER_MOVING_LEFT = false;
                 break;
             case Input.Keys.W:
                 keyPressedUp = true;
-                PlayerBaseClass.upMove = false;
+                GameAttributes.PLAYER_MOVING_UP = false;
                 break;
             case Input.Keys.S:
-                PlayerBaseClass.downMove = false;
+                GameAttributes.PLAYER_MOVING_DOWN = false;
                 keyPressedUp = true;
                 break;
             case Input.Keys.D:
-                PlayerBaseClass.rightMove = false;
-                keyPressedUp = true;
-                break;
-            case Input.Keys.I:
-                PlayerBasicClass.inventoryOpen = false;
+                GameAttributes.PLAYER_MOVING_RIGHT = false;
                 keyPressedUp = true;
                 break;
         }

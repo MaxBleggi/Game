@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.SaveState;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.game.GameContainer;
@@ -14,6 +16,7 @@ public class InventoryScreen extends BasicGameScreen {
 
     // ID used to reference the screen
     public static final int ID = 3;
+    private PlayerBasicClass player;
 
     /**
      * Initialises the game screen
@@ -23,7 +26,8 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         // get player info
-        PlayerBasicClass player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
+        this.player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
+
 
     }
 
@@ -36,11 +40,11 @@ public class InventoryScreen extends BasicGameScreen {
      */
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
-        // check if player closed inventory
-        //if (this.player.isInventoryOPen()) {
+        // if player closed inventory
+        if (!this.player.isInventoryOpen()) {
             // navigate to inventory screen
             screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
-      //  }
+        }
     }
 
     /**
@@ -62,7 +66,7 @@ public class InventoryScreen extends BasicGameScreen {
      */
     @Override
     public void render(GameContainer gc, Graphics g) {
-
+        g.drawTexture(new Texture(Gdx.files.internal("inventory.jpg")), 0,0);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.mystudio.dungeon_adventure.model.Player;
 
+import com.mystudio.dungeon_adventure.helpers.GameAttributes;
 import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
 import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
@@ -20,11 +21,6 @@ public class PlayerBaseClass implements Serializable {
     /**
      * Fundamental attributes shared by all player classes
      */
-    public static boolean leftMove;
-    public static boolean rightMove;
-    public static boolean upMove;
-    public static boolean downMove;
-    public static boolean inventoryOpen;
 
     protected String name;
 
@@ -36,8 +32,6 @@ public class PlayerBaseClass implements Serializable {
 
     protected int defaultPower;
     protected int currentPower;
-    protected String spriteName;
-    protected CollisionPoint cPoint;
 
     // player's inventory
     protected PlayerInventory inventory;
@@ -201,10 +195,10 @@ public class PlayerBaseClass implements Serializable {
     public float getPlayerXmove() {
         float xMove = 0f;
 
-        if (PlayerBaseClass.leftMove) {
+        if (GameAttributes.PLAYER_MOVING_LEFT) {
             xMove = -2f;
         }
-        if (PlayerBaseClass.rightMove) {
+        if (GameAttributes.PLAYER_MOVING_RIGHT) {
             xMove = 2f;
         }
 
@@ -214,18 +208,18 @@ public class PlayerBaseClass implements Serializable {
     public float getPlayerYmove() {
         float yMove = 0f;
 
-        if (PlayerBaseClass.upMove) {
+        if (GameAttributes.PLAYER_MOVING_UP) {
             yMove = -2f;
         }
-        if (PlayerBaseClass.downMove) {
+        if (GameAttributes.PLAYER_MOVING_DOWN) {
             yMove = 2f;
         }
 
         return yMove;
     }
 
-    public boolean isInventoryOPen() {
-        return this.inventoryOpen;
+    public boolean isInventoryOpen() {
+        return GameAttributes.PLAYER_INVENTORY_OPEN;
     }
 
 }

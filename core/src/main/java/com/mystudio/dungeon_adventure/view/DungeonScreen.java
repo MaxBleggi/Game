@@ -3,6 +3,7 @@ package com.mystudio.dungeon_adventure.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.mystudio.dungeon_adventure.helpers.GameAttributes;
 import com.mystudio.dungeon_adventure.helpers.InputHandler;
 import com.mystudio.dungeon_adventure.helpers.SaveState;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
@@ -25,8 +26,6 @@ public class DungeonScreen extends BasicGameScreen {
     private InputHandler inputProcessor;
     private PlayerBasicClass player;
 
-    private final int WINDOW_WIDTH = 800;
-    private final int WINDOW_HEIGHT = 600;
     private final int TILE_SIZE = 16;
     private final int TILED_HEIGHT = 16*500;
     private final int TILED_WIDTH = 16*500;
@@ -68,9 +67,9 @@ public class DungeonScreen extends BasicGameScreen {
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
 
         // check if player opened inventory
-        if (this.player.isInventoryOPen()) {
+        if (this.player.isInventoryOpen()) {
             // navigate to inventory screen
-            screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(InventoryScreen.ID, new FadeOutTransition(), new FadeInTransition());
         }
 
         
@@ -109,8 +108,8 @@ public class DungeonScreen extends BasicGameScreen {
         int offSetY = 0;
 
         // draw tiled map at 0,0
-        int playerDistanceFromRightEdge = point.getRenderX() % WINDOW_WIDTH;
-        int playerDistanceFromBottomEdge = point.getRenderY() % WINDOW_HEIGHT;
+        int playerDistanceFromRightEdge = point.getRenderX() % GameAttributes.SCREEN_WIDTH;
+        int playerDistanceFromBottomEdge = point.getRenderY() % GameAttributes.SCREEN_HEIGHT;
 
         offSetY = getOffsetY();
         offsetX = getOffsetX();
@@ -142,14 +141,14 @@ public class DungeonScreen extends BasicGameScreen {
         int playerY = point.getRenderY();
         int offset = 0;
 
-        if (playerY >= WINDOW_HEIGHT) {
-            offset = WINDOW_HEIGHT;
+        if (playerY >= GameAttributes.SCREEN_HEIGHT) {
+            offset = GameAttributes.SCREEN_HEIGHT;
         }
-        if (playerY >= WINDOW_HEIGHT*2) {
-            offset = WINDOW_HEIGHT*2;
+        if (playerY >= GameAttributes.SCREEN_HEIGHT*2) {
+            offset = GameAttributes.SCREEN_HEIGHT*2;
         }
-        if (playerY >= WINDOW_HEIGHT*3) {
-            offset = WINDOW_HEIGHT*3;
+        if (playerY >= GameAttributes.SCREEN_HEIGHT*3) {
+            offset = GameAttributes.SCREEN_HEIGHT*3;
         }
 
         return offset;
@@ -159,14 +158,14 @@ public class DungeonScreen extends BasicGameScreen {
         int playerX = point.getRenderX();
         int offset = 0;
 
-        if (playerX >= WINDOW_WIDTH) {
-            offset = WINDOW_WIDTH;
+        if (playerX >= GameAttributes.SCREEN_WIDTH) {
+            offset = GameAttributes.SCREEN_WIDTH;
         }
-        if (playerX >= WINDOW_WIDTH*2) {
-            offset = WINDOW_WIDTH*2;
+        if (playerX >= GameAttributes.SCREEN_WIDTH*2) {
+            offset = GameAttributes.SCREEN_WIDTH*2;
         }
-        if (playerX >= WINDOW_WIDTH*3) {
-            offset = WINDOW_WIDTH*3;
+        if (playerX >= GameAttributes.SCREEN_WIDTH*3) {
+            offset = GameAttributes.SCREEN_WIDTH*3;
         }
 
         return offset;
