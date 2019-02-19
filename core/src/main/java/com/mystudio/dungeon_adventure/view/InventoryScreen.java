@@ -43,13 +43,13 @@ public class InventoryScreen extends BasicGameScreen {
         int x = GameAttributes.SCREEN_WIDTH / 2;
         int y = GameAttributes.SCREEN_HEIGHT / 2;
 
-        int boxWidth = 50;
-        int boxHeight = 50;
-        int boxPadding = 10;
-        int middlePadding = 20;
-        this.window = new InventoryWindowUI(GameAttributes.SCREEN_WIDTH, GameAttributes.SCREEN_HEIGHT, boxWidth,
-                boxHeight, boxPadding, middlePadding);
+        int boxSize = 50;
+        int portraitSize = 100;
+        this.window = new InventoryWindowUI(GameAttributes.SCREEN_WIDTH,
+                GameAttributes.SCREEN_HEIGHT, boxSize, portraitSize);
 
+        // must be called after initialization to set coords
+        this.window.generatePositioning();
 
 
     }
@@ -93,7 +93,7 @@ public class InventoryScreen extends BasicGameScreen {
 
         g.setBackgroundColor(Color.BLACK);
 
-        this.window.draw(g);
+        this.window.drawOutlineToDebug(g);
 
     }
 

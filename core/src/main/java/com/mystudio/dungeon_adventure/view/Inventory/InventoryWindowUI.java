@@ -5,128 +5,143 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 public class InventoryWindowUI {
-    public Sprite portrait;
-    public Sprite healthBar;
-    public String nameLabel;
 
-    // 1st row of boxes
-    public InventoryBoxUI box1, box2, box3;
-    // 2nd rox
-    public InventoryBoxUI box4, box5, box6;
-    // 3rd rox
-    public InventoryBoxUI box7, box8, box9;
+    /* - - -  Edit window dimensions with these  - - - */
+    private final int boxPadding = 10;
+    private final int middlePadding = 20;
+    private final int upperSectionPadding = 20;
+    private final int bodyPadding = 10;
+    private final int numberofBoxRows = 4;
+    private final int numberOfBoxColumns = 3;
 
-    public InventoryBodyPartUI head;
-    public InventoryBodyPartUI torso;
-    public InventoryBodyPartUI legs;
-    public InventoryBodyPartUI feet;
+    /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    public InventoryHandsUI leftHand;
-    public InventoryHandsUI rightHand;
-
+    // attributes of the window
+    // screen refers to the user's screen
+    // window refers to the UI being created
     private int screenWidth;
     private int screenHeight;
-    private int boxPadding;
-    private int middlePadding;
+    private int windowWidth;
+    private int windowHeight;
+    private int boxSize;
 
-  //  private int windowX;
-  //  private int windowY;
-
-    private int boxHeight;
-    private int boxWidth;
-
-    // player portrait
+    /* - - -  The top section of the window - - - */
+    // player's portrait
     private int portraitX;
     private int portraitY;
-    private int portraitW;
-    private int portraitH;
+    private int portraitSize;
+    public Sprite portrait;
 
-    private int upperSectionPadding;
-
+    // player's name label
     private int nameX;
     private int nameY;
 
-    public InventoryWindowUI(int screenWidth, int screenHeight, int boxWidth, int boxHeight, int boxPadding, int middlePadding) {
+    // player's health status
+    private int healthX;
+    private int healthY;
+    /* - - - - - - - - - - - - - - - - - - - - - */
+
+    /* - - -  The bottom section of the window - - - */
+    // 1st row of boxes
+    private InventoryBoxUI box1, box2, box3;
+    // 2nd row of boxes
+    private InventoryBoxUI box4, box5, box6;
+    // 3rd row of boxes
+    private InventoryBoxUI box7, box8, box9;
+    // 4th row of boxes
+    private InventoryBoxUI box10, box11, box12;
+
+    // body parts
+    private InventoryBodyPartUI head;
+    private InventoryBodyPartUI torso;
+    private InventoryBodyPartUI legs;
+    private InventoryBodyPartUI feet;
+
+    // hands
+    private InventoryHandsUI leftHand;
+    private InventoryHandsUI rightHand;
+    /* - - - - - - - - - - - - - - - - - - - - - */
+
+    public InventoryWindowUI(int screenWidth, int screenHeight, int boxSize, int portraitSize) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
-        this.boxPadding = boxPadding;
-        this.middlePadding = middlePadding;
-        this.boxWidth = boxWidth;
-        this.boxHeight = boxHeight;
+        this.boxSize = boxSize;
+        this.portraitSize = portraitSize;
 
+        // width = box - padding - box - padding - box - middle - hand - body - hand
+        this.windowWidth = this.boxSize * this.numberOfBoxColumns + this.boxPadding
+                * (this.numberOfBoxColumns - 1) + this.middlePadding + this.boxSize*3;
 
-        this.portraitW = boxWidth*2;
-        this.portraitH = boxHeight*2;
-        this.upperSectionPadding = 20;
+        // height = portrait - upperPadding - box - padding - box - padding - box padding - box
+        this.windowHeight = this.portraitSize +  this.boxSize * this.numberOfBoxColumns
+                + boxPadding * (this.numberOfBoxColumns - 1) + this.upperSectionPadding;
+    }
 
-        // find total width of inventory window
-        // width = box - padding - box - padding - box - middle - hand - body(twice the size of a box) - hand
-        int w = boxWidth*3 + boxPadding*2 + middlePadding + boxWidth + boxWidth*2+ boxWidth;
-        int h = this.portraitH +  boxHeight*4 + boxPadding*3 + this.upperSectionPadding;
-
+    /**
+     * Required after initialization of object. Calculates the coord's for each element
+     */
+    public void generatePositioning() {
         // center window onto screen
-        int x = (screenWidth / 2) - (w / 2);
-        int y = (screenHeight / 2) - (h / 2);
+        int x = (screenWidth / 2) - (this.windowWidth / 2);
+        int y = (screenHeight / 2) - (this.windowHeight / 2);
 
-
-        // create upper section
+        // --- create upper section ---
+        // portrait
         this.portraitX = x;
         this.portraitY = y;
 
-        int lowerSectionY = y + this.portraitH + this.upperSectionPadding;
+        // --- create lower section ---
+        int lowerSectionY = y + this.portraitSize + this.upperSectionPadding;
 
-        // create the boxes relative to the inventory window
+        // create the boxes
         int incrementedX = x;
-        this.box1 = new InventoryBoxUI(incrementedX, lowerSectionY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box2 = new InventoryBoxUI(incrementedX, lowerSectionY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box3 = new InventoryBoxUI(incrementedX, lowerSectionY, boxWidth, boxHeight);
+        this.box1 = new InventoryBoxUI(incrementedX, lowerSectionY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box2 = new InventoryBoxUI(incrementedX, lowerSectionY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box3 = new InventoryBoxUI(incrementedX, lowerSectionY, this.boxSize, this.boxSize);
 
         incrementedX = x;
-        int adjY = lowerSectionY + boxHeight+boxPadding;
-        this.box4 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box5 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box6 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
+        int adjY = lowerSectionY + this.boxSize + this.boxPadding;
+        this.box4 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box5 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box6 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
 
         incrementedX = x;
-        adjY = lowerSectionY + boxHeight+boxPadding + boxHeight + boxPadding;
-        this.box7 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box8 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
-        incrementedX += boxWidth + boxPadding;
-        this.box9 = new InventoryBoxUI(incrementedX, adjY, boxWidth, boxHeight);
+        adjY = lowerSectionY + this.boxSize*2 + this.boxPadding*2;
+        this.box7 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box8 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
+        incrementedX += this.boxSize + this.boxPadding;
+        this.box9 = new InventoryBoxUI(incrementedX, adjY, this.boxSize, this.boxSize);
 
 
         // left hand
-        int handsY = lowerSectionY + boxHeight + boxHeight/2;
-        incrementedX = x + boxWidth*3 + boxPadding*2 + middlePadding;
-        this.leftHand = new InventoryHandsUI(incrementedX, handsY, boxWidth, boxHeight,true);
-
-        int bodyPadding = 10;
+        int handsY = lowerSectionY + this.boxSize + this.boxSize/2;
+        incrementedX = x + this.boxSize*3 + boxPadding*2 + middlePadding;
+        this.leftHand = new InventoryHandsUI(incrementedX, handsY, this.boxSize, this.boxSize,true);
 
         // create  the body parts
         incrementedX += this.leftHand.getWidth() + bodyPadding;
         adjY = lowerSectionY;
-        this.head = new InventoryBodyPartUI(incrementedX, adjY, boxWidth, boxHeight, Wearables.HEAD);
+        this.head = new InventoryBodyPartUI(incrementedX, adjY, this.boxSize, this.boxSize, Wearables.HEAD);
         adjY += this.head.getHeight() + bodyPadding;
-        this.torso = new InventoryBodyPartUI(incrementedX, adjY, boxWidth, boxHeight, Wearables.TORSO);
+        this.torso = new InventoryBodyPartUI(incrementedX, adjY, this.boxSize, this.boxSize, Wearables.TORSO);
         adjY += this.torso.getHeight() + bodyPadding;
-        this.legs = new InventoryBodyPartUI(incrementedX, adjY, boxWidth, boxHeight, Wearables.LEGS);
+        this.legs = new InventoryBodyPartUI(incrementedX, adjY, this.boxSize, this.boxSize, Wearables.LEGS);
         adjY += this.legs.getHeight() + bodyPadding;
-        this.feet = new InventoryBodyPartUI(incrementedX, adjY, boxWidth, boxHeight, Wearables.FEET);
+        this.feet = new InventoryBodyPartUI(incrementedX, adjY, this.boxSize, this.boxSize, Wearables.FEET);
 
+        // right hand
         incrementedX += this.torso.getWidth() + bodyPadding;
-        this.rightHand = new InventoryHandsUI(incrementedX, handsY, boxWidth, boxHeight,false);
+        this.rightHand = new InventoryHandsUI(incrementedX, handsY, this.boxSize, this.boxSize,false);
     }
 
+    public void drawOutlineToDebug(Graphics g) {
 
-
-    public void draw(Graphics g) {
-
-        g.drawRect(this.portraitX, this.portraitY, this.portraitW, this.portraitH);
+        g.drawRect(this.portraitX, this.portraitY, this.portraitSize, this.portraitSize);
 
         g.drawRect(this.box1.getX(), this.box1.getY(), this.box1.getWidth(), this.box1.getHeight());
         g.drawRect(this.box2.getX(), this.box2.getY(), this.box2.getWidth(), this.box2.getHeight());
@@ -146,5 +161,4 @@ public class InventoryWindowUI {
         g.drawRect(this.rightHand.getX(), this.rightHand.getY(), this.rightHand.getWidth(), this.rightHand.getHeight());
 
     }
-
 }
