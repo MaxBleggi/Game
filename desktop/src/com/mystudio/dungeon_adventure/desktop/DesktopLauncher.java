@@ -14,6 +14,7 @@ public class DesktopLauncher {
 		config.width = GameAttributes.SCREEN_WIDTH;
 		config.height = GameAttributes.SCREEN_HEIGHT;
 		config.vSyncEnabled = true;
+		config.resizable = true;
 		new DesktopMini2DxGame(new DungeonAdventure(), config);
 	}
 }
