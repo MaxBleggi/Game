@@ -1,10 +1,10 @@
 package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.GameAttributes;
-import com.mystudio.dungeon_adventure.helpers.InputHandler;
 import com.mystudio.dungeon_adventure.helpers.SaveState;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
@@ -23,7 +23,6 @@ import java.io.IOException;
 public class DungeonScreen extends BasicGameScreen {
     public static final int ID = 2;
     private DungeonTiledMap tiledMap;
-    private InputHandler inputProcessor;
     private PlayerBasicClass player;
 
     private final int TILE_SIZE = 16;
@@ -52,10 +51,6 @@ public class DungeonScreen extends BasicGameScreen {
 
         this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, "WallsLayer");
 
-        // get user input handler
-        this.inputProcessor = new InputHandler();
-        Gdx.input.setInputProcessor(inputProcessor);
-
         this.point = new CollisionPoint();
         this.sprite = new Sprite(new Texture(Gdx.files.internal(this.player.getTexture())));
 
@@ -66,30 +61,29 @@ public class DungeonScreen extends BasicGameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
 
-        // check if player opened inventory
-        if (this.player.isInventoryOpen()) {
+        // open inventory if player pressed I
+        if (Gdx.input.isKeyPressed(Input.Keys.I)) {
             // navigate to inventory screen
             screenManager.enterGameScreen(InventoryScreen.ID, new FadeOutTransition(), new FadeInTransition());
         }
-
         
         //preUpdate() must be calculated before any changes are made to the CollisionPoint
         this.point.preUpdate();
 
-        float yMove = this.player.getPlayerYmove();
-        float xMove = this.player.getPlayerXmove();
-
-        // check if next tile will be a collision
+        // calculate the next coordinates for player to move
+        float yMove = this.player.getPlayerYmovement();
+        float xMove = this.player.getPlayerXmovement();
         int nextXTile = (int)(this.point.getX() + xMove) / TILE_SIZE;
         int nextYTile = (int)(this.point.getY() + yMove) / TILE_SIZE;
 
-       if (collisions[nextXTile][nextYTile] == 0) {
+        // only move if it's not colliding with anything
+        if (collisions[nextXTile][nextYTile] == 0) {
             // Move the point by 4 pixels on the X and Y axis
             this.point.set(this.point.getX() + xMove, this.point.getY() + yMove);
-       }
-       else {
+        }
+        else {
            // collision
-       }
+        }
 
     }
 

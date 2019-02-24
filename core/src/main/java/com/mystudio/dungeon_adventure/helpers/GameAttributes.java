@@ -4,13 +4,6 @@ public class GameAttributes {
     public static int SCREEN_WIDTH = 800;
     public static int SCREEN_HEIGHT = 600;
 
-    // used for handling user input
-    public static boolean PLAYER_MOVING_LEFT;
-    public static boolean PLAYER_MOVING_RIGHT;
-    public static boolean PLAYER_MOVING_UP;
-    public static boolean PLAYER_MOVING_DOWN;
-    public static boolean PLAYER_INVENTORY_OPEN;
-
     /* used for doing things related to screen size
      * determines which assets and how to size elements
      * size based of screen width and values are as follows
