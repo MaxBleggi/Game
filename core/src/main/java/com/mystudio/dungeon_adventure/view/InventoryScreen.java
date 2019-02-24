@@ -1,6 +1,7 @@
 package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.GameAttributes;
@@ -64,7 +65,7 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
         // if player closed inventory
-        if (!this.player.isInventoryOpen()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.I)) {
             // navigate to inventory screen
             screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
         }
