@@ -14,8 +14,15 @@ public class ItemBase implements Serializable {
     protected int itemID;
     protected int itemTypeID;
 
+    public ItemBase (int itemID, int itemTypeID, String title, String desc, Rarity rarity) {
+        this.itemID = itemID;
+        this.itemTypeID = itemTypeID;
+        this.title = title;
+        this.description = desc;
+        this.rarityLevel = rarity;
+    }
+
     public ItemBase () {
-        // this class will never be instantiated directly, only extended
     }
 
     /**

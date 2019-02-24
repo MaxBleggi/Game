@@ -24,6 +24,7 @@ public class PlayerInventory implements Serializable {
     // different types of items possible in inventory, <itemID, Item>
     private Map<Integer, ItemActionable> actionableItems;
     private Map<Integer, ItemWearable> wearableItems;
+    private Map<Integer, ItemBase> genericItems;
 
     // player's inventory; ID's are used to keep track of all items
     private int maxInventorySize;
@@ -104,6 +105,33 @@ public class PlayerInventory implements Serializable {
     }
 
     /**
+     * Adds wearable item into player's inventory
+     * @param item generic item added
+     * @return error/success value
+     */
+    public int addItemToInventory(ItemBase item) {
+        int ID = item.itemID;
+
+        // check if inventory is full
+        if (this.inventory.size() >= this.maxInventorySize) {
+            System.out.println("Max inventory size reached");
+            return ReturnValues.MAX_INVENTORY_SIZE;
+        }
+
+        // ensure this item is not already in inventory
+        if (this.inventory.contains(ID)) {
+            this.inventory.add(ID);
+            this.genericItems.put(ID, item);
+        }
+        else {
+            System.out.println("WARNING: Tried to place item in inventory that already existed");
+            return ReturnValues.ITEM_IN_INVENTORY_EXISTS;
+        }
+
+        return 0;
+    }
+
+    /**
      * Removes item from player's inventory
      * @param item item to be removed
      * @return error/success value
@@ -142,6 +170,27 @@ public class PlayerInventory implements Serializable {
         this.wearableItems.remove(ID);
         return 0;
     }
+
+    /**
+     * Removes item from player's inventory
+     * @param item item to be removed
+     * @return error/success value
+     */
+    public int removeItemFromInventory(ItemBase item) {
+        // ensure item is in inventory
+        int ID = item.itemID;
+
+        if (this.inventory.contains(ID)) {
+            System.out.println("ERROR: Attempted to remove item not in inventory");
+            return ReturnValues.ITEM_NOT_IN_INVENTORY;
+        }
+
+        // remove the item from inventory
+        this.inventory.remove(ID);
+        this.genericItems.remove(ID);
+        return 0;
+    }
+
 
     /**
      * Adds a wearable item to the player's body. Places old item in inventory
