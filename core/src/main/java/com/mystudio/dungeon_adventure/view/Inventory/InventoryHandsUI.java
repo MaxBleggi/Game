@@ -67,7 +67,7 @@ public class InventoryHandsUI {
      *
      * @return whether or not given (x,y) lie inside box
      */
-    public boolean isInClickableArea(int x, int y) {
+    public boolean isInClickedOn(int x, int y) {
         if (x >= this.x && x < (this.x + this.width)) {
             if (y >= this.y && y < (this.y + this.height)) {
                 return true;
