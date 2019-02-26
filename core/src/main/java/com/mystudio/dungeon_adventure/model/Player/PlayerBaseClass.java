@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure.model.Player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.mystudio.dungeon_adventure.helpers.GameAttributes;
 import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
 import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
@@ -192,34 +194,34 @@ public class PlayerBaseClass implements Serializable {
         return this.currentHandSize;
     }
 
-    public float getPlayerXmove() {
-        float xMove = 0f;
+    public float getPlayerXmovement() {
+        float xMove = 0.0f;
 
-        if (GameAttributes.PLAYER_MOVING_LEFT) {
-            xMove = -2f;
+        // player pressing A key (moving left)
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            xMove = -2.0f;
         }
-        if (GameAttributes.PLAYER_MOVING_RIGHT) {
-            xMove = 2f;
+        // player pressing D key (moving right)
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            xMove = 2.0f;
         }
 
         return xMove;
     }
 
-    public float getPlayerYmove() {
-        float yMove = 0f;
+    public float getPlayerYmovement() {
+        float yMove = 0.0f;
 
-        if (GameAttributes.PLAYER_MOVING_UP) {
-            yMove = -2f;
+        // player pressing W key (moving up)
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            yMove = -2.0f;
         }
-        if (GameAttributes.PLAYER_MOVING_DOWN) {
-            yMove = 2f;
+        // player pressing S key (moving down)
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            yMove = 2.0f;
         }
 
         return yMove;
-    }
-
-    public boolean isInventoryOpen() {
-        return GameAttributes.PLAYER_INVENTORY_OPEN;
     }
 
 }
