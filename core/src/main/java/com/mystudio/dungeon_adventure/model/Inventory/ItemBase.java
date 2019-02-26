@@ -1,28 +1,40 @@
 package com.mystudio.dungeon_adventure.model.Inventory;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
+import org.mini2Dx.core.graphics.Sprite;
 
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 
 public class ItemBase implements Serializable {
 
     protected Rarity rarityLevel;
     protected String title;
     protected String description;
+    protected Sprite sprite;
 
     // cannot update after creation
     protected int itemID;
     protected int itemTypeID;
 
-    public ItemBase (int itemID, int itemTypeID, String title, String desc, Rarity rarity) {
+    public ItemBase (int itemID, int itemTypeID, String title, String desc, Rarity rarity, Sprite sprite) {
         this.itemID = itemID;
         this.itemTypeID = itemTypeID;
         this.title = title;
         this.description = desc;
         this.rarityLevel = rarity;
+        this.sprite = sprite;
     }
 
     public ItemBase () {
+    }
+
+    /**
+     * Retrieves sprite
+     * @return item's sprite
+     */
+    public Sprite getSprite() {
+        return this.sprite;
     }
 
     /**

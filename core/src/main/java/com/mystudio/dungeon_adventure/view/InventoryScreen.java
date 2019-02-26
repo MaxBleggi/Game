@@ -1,6 +1,8 @@
 package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.GameAttributes;
@@ -10,6 +12,7 @@ import com.mystudio.dungeon_adventure.view.DungeonScreen;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -27,6 +30,7 @@ public class InventoryScreen extends BasicGameScreen {
     private PlayerBasicClass player;
 
     private InventoryWindowUI window;
+
 
     /**
      * Initialises the game screen
@@ -48,10 +52,8 @@ public class InventoryScreen extends BasicGameScreen {
         this.window = new InventoryWindowUI(GameAttributes.SCREEN_WIDTH,
                 GameAttributes.SCREEN_HEIGHT, boxSize, portraitSize);
 
-        // must be called after initialization to set coords
-        this.window.generatePositioning();
-
-
+        // handle user interactions with UI
+        handleInput();
     }
 
     /**
@@ -105,5 +107,28 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public int getId() {
         return ID;
+    }
+
+    private void handleInput() {
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+
+            @Override
+            public boolean touchDown (int x, int y, int pointer, int button) {
+                System.out.println("touchdown at x: " + x + " y:" + y);
+                return true;
+            }
+
+            @Override
+            public boolean touchUp (int x, int y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public boolean touchDragged (int x, int y, int pointer) {
+                System.out.println("dragged at x: " + x + " y:" + y);
+                return true;
+            }
+        });
     }
 }

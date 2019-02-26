@@ -1,6 +1,7 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
 import com.mystudio.dungeon_adventure.helpers.Wearables;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
@@ -91,7 +92,14 @@ public class InventoryWindowUI {
         // height = portrait - upperPadding - box - padding - box - padding - box padding - box
         this.windowHeight = this.portraitSize +  this.boxSize * this.numberOfBoxColumns
                 + boxPadding * (this.numberOfBoxColumns - 1) + this.upperSectionPadding;
+
+        generatePositioning();
     }
+
+    public void setSpritesFromModel(PlayerBasicClass player) {
+        //player.inventory;
+    }
+
 
     /**
      * Required after initialization of object. Calculates the coord's for each element
@@ -171,55 +179,55 @@ public class InventoryWindowUI {
             if (y > this.portraitY + this.portraitSize) {
 
                 // check every box
-                if (this.boxes.get(0).isInClickedOn(x,y)) {
+                if (this.boxes.get(0).isClickedOn(x,y)) {
                     System.out.println("inventory0");
                     return INVENTORY0;
                 }
-                if (this.boxes.get(1).isInClickedOn(x,y)) {
+                if (this.boxes.get(1).isClickedOn(x,y)) {
                     System.out.println("inventory1");
                     return INVENTORY1;
                 }
-                if (this.boxes.get(2).isInClickedOn(x,y)) {
+                if (this.boxes.get(2).isClickedOn(x,y)) {
                     System.out.println("inventory2");
                     return INVENTORY2;
                 }
-                if (this.boxes.get(3).isInClickedOn(x,y)) {
+                if (this.boxes.get(3).isClickedOn(x,y)) {
                     System.out.println("inventory3");
                     return INVENTORY3;
                 }
-                if (this.boxes.get(4).isInClickedOn(x,y)) {
+                if (this.boxes.get(4).isClickedOn(x,y)) {
                     System.out.println("inventory4");
                     return INVENTORY4;
                 }
-                if (this.boxes.get(5).isInClickedOn(x,y)) {
+                if (this.boxes.get(5).isClickedOn(x,y)) {
                     System.out.println("inventory5");
                     return INVENTORY5;
                 }
-                if (this.boxes.get(6).isInClickedOn(x,y)) {
+                if (this.boxes.get(6).isClickedOn(x,y)) {
                     System.out.println("inventory6");
                     return INVENTORY6;
                 }
-                if (this.boxes.get(7).isInClickedOn(x,y)) {
+                if (this.boxes.get(7).isClickedOn(x,y)) {
                     System.out.println("inventory7");
                     return INVENTORY7;
                 }
-                if (this.boxes.get(8).isInClickedOn(x,y)) {
+                if (this.boxes.get(8).isClickedOn(x,y)) {
                     System.out.println("inventory8");
                     return INVENTORY8;
                 }
-                if (this.boxes.get(9).isInClickedOn(x,y)) {
+                if (this.boxes.get(9).isClickedOn(x,y)) {
                     System.out.println("inventory9");
                     return INVENTORY9;
                 }
-                if (this.boxes.get(10).isInClickedOn(x,y)) {
+                if (this.boxes.get(10).isClickedOn(x,y)) {
                     System.out.println("inventory10");
                     return INVENTORY10;
                 }
-                if (this.boxes.get(11).isInClickedOn(x,y)) {
+                if (this.boxes.get(11).isClickedOn(x,y)) {
                     System.out.println("inventory11");
                     return INVENTORY11;
                 }
-                if (this.boxes.get(12).isInClickedOn(x,y)) {
+                if (this.boxes.get(12).isClickedOn(x,y)) {
                     System.out.println("inventory12");
                     return INVENTORY12;
                 }
@@ -230,27 +238,27 @@ public class InventoryWindowUI {
 
             // the only clickable areas are on the bottom section
             if (y > this.portraitY + this.portraitSize) {
-                if (this.rightHand.isInClickedOn(x,y)) {
+                if (this.rightHand.isClickedOn(x,y)) {
                     System.out.println("r hand");
                     return R_HAND;
                 }
-                if (this.leftHand.isInClickedOn(x,y)) {
+                if (this.leftHand.isClickedOn(x,y)) {
                     System.out.println("l hand");
                     return L_HAND;
                 }
-                if (this.head.isInClickedOn(x,y)) {
+                if (this.head.isClickedOn(x,y)) {
                     System.out.println("head");
                     return HEAD;
                 }
-                if (this.torso.isInClickedOn(x,y)) {
+                if (this.torso.isClickedOn(x,y)) {
                     System.out.println("torso");
                     return TORSO;
                 }
-                if (this.legs.isInClickedOn(x,y)) {
+                if (this.legs.isClickedOn(x,y)) {
                     System.out.println("legs");
                     return LEGS;
                 }
-                if (this.feet.isInClickedOn(x,y)) {
+                if (this.feet.isClickedOn(x,y)) {
                     System.out.println("feet");
                     return FEET;
                 }

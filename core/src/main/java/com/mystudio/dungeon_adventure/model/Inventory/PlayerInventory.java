@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class PlayerInventory implements Serializable {
 
-    private final int DEFAULT_INVENTORY_SIZE = 20;
+    private final int DEFAULT_INVENTORY_SIZE = 12;
 
     // player's body parts, <WearableType, Item>
     private Map<Wearables, ItemWearable> bodyParts;
@@ -26,21 +26,27 @@ public class PlayerInventory implements Serializable {
     private Map<Integer, ItemWearable> wearableItems;
     private Map<Integer, ItemBase> genericItems;
 
-    // player's inventory; ID's are used to keep track of all items
+    // <IDofObject, IDofType>
+    // this is the variable used to glue all the different maps together
+    // use this to find which data type the object ID is
+    private Map<Integer, Integer> itemTypes;
+    private static final int WEARABLE = 0;
+    private static final int ACTIONABLE = 1;
+    private static final int GENERIC = 2;
+
     private int maxInventorySize;
-    private ArrayList<Integer> inventory;
 
     /**
      * initialize collection types
      */
     public PlayerInventory() {
-        this.actionableItems = new HashMap<Integer, ItemActionable>();
-        this.wearableItems = new HashMap<Integer, ItemWearable>();
-        this.inventory = new ArrayList<Integer>();
+        this.actionableItems = new HashMap<Integer, ItemActionable>(0);
+        this.wearableItems = new HashMap<Integer, ItemWearable>(0);
+        this.itemTypes = new HashMap<Integer, Integer>(0);
         this.maxInventorySize = this.DEFAULT_INVENTORY_SIZE;
 
         // set player's body parts to null initially
-        this.bodyParts = new HashMap<Wearables, ItemWearable>();
+        this.bodyParts = new HashMap<Wearables, ItemWearable>(4);
 
         for (Wearables type: Wearables.values()) {
             this.bodyParts.put(type, null);
@@ -50,24 +56,52 @@ public class PlayerInventory implements Serializable {
         this.rightHand = null;
     }
 
+    // TODO figure out how to getInventoryItem()
+
+    /**
+     * Retrieves item on player's body part
+     * @return ItemWearable
+     */
+    public ItemWearable getBodyPart(Wearables bodyPart) {
+        return this.bodyParts.get(bodyPart);
+    }
+
+    /**
+     * Retrieves item in player's left hand
+     * @return ItemActionable
+     */
+    public ItemActionable getLeftHand() {
+        return this.leftHand;
+    }
+
+    /**
+     * Retrieves item in player's right hand
+     * @return ItemActionable
+     */
+    public ItemActionable getRightHand() {
+        return this.rightHand;
+    }
+
     /**
      * Adds wearable item into player's inventory
      * @param item wearable item added
      * @return error/success value
      */
     public int addItemToInventory(ItemWearable item) {
-        int ID = item.itemID;
+        int itemID = item.itemID;
 
         // check if inventory is full
-        if (this.inventory.size() >= this.maxInventorySize) {
+        if (this.itemTypes.size() >= this.maxInventorySize) {
             System.out.println("Max inventory size reached");
             return ReturnValues.MAX_INVENTORY_SIZE;
         }
 
         // ensure this item is not already in inventory
-        if (this.inventory.contains(ID)) {
-            this.inventory.add(ID);
-            this.wearableItems.put(ID, item);
+        if (this.itemTypes.containsKey(itemID)) {
+
+            // insert item
+            this.itemTypes.put(itemID, WEARABLE);
+            this.wearableItems.put(itemID, item);
         }
         else {
             System.out.println("WARNING: Tried to place item in inventory that already existed");
@@ -83,18 +117,18 @@ public class PlayerInventory implements Serializable {
      * @return error/success value
      */
     public int addItemToInventory(ItemActionable item) {
-        int ID = item.itemID;
+        int itemID = item.itemID;
 
         // check if inventory is full
-        if (this.inventory.size() >= this.maxInventorySize) {
+        if (this.itemTypes.size() >= this.maxInventorySize) {
             System.out.println("Max inventory size reached");
             return ReturnValues.MAX_INVENTORY_SIZE;
         }
 
         // ensure this item is not already in inventory
-        if (this.inventory.contains(ID)) {
-            this.inventory.add(ID);
-            this.actionableItems.put(ID, item);
+        if (this.itemTypes.containsKey(itemID)) {
+            this.itemTypes.put(itemID, ACTIONABLE);
+            this.actionableItems.put(itemID, item);
         }
         else {
             System.out.println("ERROR: Tried to place item in inventory that already existed");
@@ -105,31 +139,32 @@ public class PlayerInventory implements Serializable {
     }
 
     /**
-     * Adds wearable item into player's inventory
+     * Adds generic item into player's inventory
      * @param item generic item added
      * @return error/success value
      */
     public int addItemToInventory(ItemBase item) {
-        int ID = item.itemID;
+        int itemID = item.itemID;
 
         // check if inventory is full
-        if (this.inventory.size() >= this.maxInventorySize) {
+        if (this.itemTypes.size() >= this.maxInventorySize) {
             System.out.println("Max inventory size reached");
             return ReturnValues.MAX_INVENTORY_SIZE;
         }
 
         // ensure this item is not already in inventory
-        if (this.inventory.contains(ID)) {
-            this.inventory.add(ID);
-            this.genericItems.put(ID, item);
+        if (this.itemTypes.containsKey(itemID)) {
+            this.itemTypes.put(itemID, ACTIONABLE);
+            this.genericItems.put(itemID, item);
         }
         else {
-            System.out.println("WARNING: Tried to place item in inventory that already existed");
+            System.out.println("ERROR: Tried to place item in inventory that already existed");
             return ReturnValues.ITEM_IN_INVENTORY_EXISTS;
         }
 
         return 0;
     }
+
 
     /**
      * Removes item from player's inventory
@@ -140,13 +175,13 @@ public class PlayerInventory implements Serializable {
         // ensure item is in inventory
         int ID = item.itemID;
 
-        if (this.inventory.contains(ID)) {
+        if (this.itemTypes.containsKey(ID)) {
             System.out.println("ERROR: Attempted to remove item not in inventory");
             return ReturnValues.ITEM_NOT_IN_INVENTORY;
         }
 
         // remove the item from inventory
-        this.inventory.remove(ID);
+        this.itemTypes.remove(ID);
         this.actionableItems.remove(ID);
         return 0;
     }
@@ -160,13 +195,13 @@ public class PlayerInventory implements Serializable {
         // ensure item is in inventory
         int ID = item.itemID;
 
-        if (this.inventory.contains(ID)) {
+        if (this.itemTypes.containsKey(ID)) {
             System.out.println("ERROR: Attempted to remove item not in inventory");
             return ReturnValues.ITEM_NOT_IN_INVENTORY;
         }
 
         // remove the item from inventory
-        this.inventory.remove(ID);
+        this.itemTypes.remove(ID);
         this.wearableItems.remove(ID);
         return 0;
     }
@@ -180,13 +215,13 @@ public class PlayerInventory implements Serializable {
         // ensure item is in inventory
         int ID = item.itemID;
 
-        if (this.inventory.contains(ID)) {
+        if (this.itemTypes.containsKey(ID)) {
             System.out.println("ERROR: Attempted to remove item not in inventory");
             return ReturnValues.ITEM_NOT_IN_INVENTORY;
         }
 
         // remove the item from inventory
-        this.inventory.remove(ID);
+        this.itemTypes.remove(ID);
         this.genericItems.remove(ID);
         return 0;
     }
@@ -233,7 +268,7 @@ public class PlayerInventory implements Serializable {
             ItemActionable oldItem = this.leftHand;
             this.leftHand = newItem;
 
-            // pop item into inventory, inventory may be full
+            // pop item into inventory, inventory may be full though
             return addItemToInventory(oldItem);
         }
     }
@@ -255,7 +290,7 @@ public class PlayerInventory implements Serializable {
             ItemActionable oldItem = this.rightHand;
             this.rightHand = newItem;
 
-            // pop item into inventory, inventory may be full
+            // pop item into inventory, inventory may be full though
             return addItemToInventory(oldItem);
         }
     }
@@ -272,8 +307,8 @@ public class PlayerInventory implements Serializable {
      * Retrieves current inventory size
      * @return size of inventory
      */
-    public int getCurrentInventory() {
-        return this.inventory.size();
+    public int getCurrentInventorySize() {
+        return this.itemTypes.size();
     }
 
     /**

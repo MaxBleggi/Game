@@ -34,10 +34,10 @@ public class PlayerBaseClass implements Serializable {
     protected int currentPower;
 
     // player's inventory
-    protected PlayerInventory inventory;
+    public PlayerInventory inventory;
 
     // player's card deck
-    protected CardDeck cardDeck;
+    public CardDeck cardDeck;
 
 
     public PlayerBaseClass(){
