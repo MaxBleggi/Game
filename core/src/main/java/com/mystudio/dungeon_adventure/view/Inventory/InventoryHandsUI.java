@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.model.Inventory.ItemActionable;
 import org.mini2Dx.core.graphics.Sprite;
 
@@ -12,30 +14,34 @@ public class InventoryHandsUI {
     private int width;
     private int height;
 
-    private boolean itemAssigned;
-    private ItemActionable item;
+    private int itemID;
 
     // the sprite for each object
-    public Sprite itemSprite;
+    public Sprite sprite;
 
     public InventoryHandsUI(int x, int y, int width, int height, boolean isLeftHand) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.itemAssigned = false;
         this.isLeftHand = isLeftHand;
+        this.sprite = null;
+        this.itemID = -1;
+    }
+
+    public Sprite getSprite() {
+        return this.sprite;
     }
 
     /**
      * Attempts to place item into slot. Will return false if slot is already used.
      * @return success of placement
      */
-    public boolean placeItemIfEmpty(ItemActionable item) {
-        if (!this.itemAssigned) {
-            this.itemAssigned = true;
-
-            this.item = item;
+    public boolean placeItemIfEmpty(int itemID, String spritePath) {
+        if (this.sprite == null) {
+            this.itemID = itemID;
+            this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+            this.sprite.setSize(this.width, this.height);
             return true;
         }
         return false;
@@ -43,19 +49,23 @@ public class InventoryHandsUI {
 
     /**
      * Removes item from slot
-     * @return item removed
+     * @return itemID removed
      */
-    public ItemActionable removeItem() {
-        this.itemAssigned = false;
+    public int removeItem() {
+        if (this.sprite != null) {
+            this.sprite = null;
 
-        ItemActionable tmp = this.item;
-        this.item = null;
+            int tmp = this.itemID;
+            this.itemID = -1;
 
-        return tmp;
+            return tmp;
+        }
+
+        return -1;
     }
 
-    public boolean isItemAssigned() {
-        return this.itemAssigned;
+    public boolean hasItem() {
+        return this.sprite != null;
     }
 
     public boolean isLeftHand() {

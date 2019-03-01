@@ -2,16 +2,12 @@ package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-<<<<<<< HEAD
 import com.badlogic.gdx.InputAdapter;
-=======
->>>>>>> master
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.mystudio.dungeon_adventure.helpers.GameAttributes;
-import com.mystudio.dungeon_adventure.helpers.SaveState;
+import com.mystudio.dungeon_adventure.helpers.*;
+import com.mystudio.dungeon_adventure.model.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
-import com.mystudio.dungeon_adventure.view.DungeonScreen;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -19,20 +15,26 @@ import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
-
 public class InventoryScreen extends BasicGameScreen {
+
+    private boolean isScreenVisible;
 
     // ID used to reference the screen
     public static final int ID = 3;
     private PlayerBasicClass player;
 
     private InventoryWindowUI window;
+    private Sprite windowBackground;
+    private int windowX;
+    private int windowY;
+
+    // the box that contains that the item is dragged from
+    private boolean isDraggedFromBox = false;
+    private int boxBeingDraggedFrom;
 
 
     /**
@@ -47,16 +49,43 @@ public class InventoryScreen extends BasicGameScreen {
 
 
         // create 4 x 4 box of rectangles
-        int x = GameAttributes.SCREEN_WIDTH / 2;
-        int y = GameAttributes.SCREEN_HEIGHT / 2;
+        int x = GameConstants.SCREEN_WIDTH / 2;
+        int y = GameConstants.SCREEN_HEIGHT / 2;
 
         int boxSize = 50;
         int portraitSize = 100;
-        this.window = new InventoryWindowUI(GameAttributes.SCREEN_WIDTH,
-                GameAttributes.SCREEN_HEIGHT, boxSize, portraitSize);
+        this.window = new InventoryWindowUI(GameConstants.SCREEN_WIDTH,
+                GameConstants.SCREEN_HEIGHT, boxSize, portraitSize);
+
+
+     //   this.windowBackground = new Sprite(new Texture(Gdx.files.internal(GameConstants.INVENTORY_WINDOW_BACKGROUND)));
+      //  this.windowBackground.setSize(this.window.getWidth()*1.5f, this.window.getHeight()*1.5f);
+
+      //  this.windowX = this.window.getX() - portraitSize/4;
+      //  this.windowY = this.window.getY() - portraitSize/2;
 
         // handle user interactions with UI
+     //   handleInput();
+
+        this.isScreenVisible = false;
+    }
+
+    @Override
+    public void preTransitionIn(Transition transitionIn) {
+        this.isScreenVisible = true;
         handleInput();
+        ItemActionable test = new ItemActionable(1, "sword", "desc", Rarity.COMMON,
+                Actionables.SWORD, "inventory/items/sword.png");
+
+        this.window.setBoxSprite(0, test.getItemID(), test.getSpritePath());
+
+        super.preTransitionIn(transitionIn);
+    }
+
+    @Override
+    public void preTransitionOut(Transition transitionOut) {
+        this.isScreenVisible = false;
+        super.preTransitionOut(transitionOut);
     }
 
     /**
@@ -98,7 +127,10 @@ public class InventoryScreen extends BasicGameScreen {
 
         g.setBackgroundColor(Color.BLACK);
 
-        this.window.drawOutlineToDebug(g);
+       // g.drawSprite(this.windowBackground, windowX, windowY);
+       this.window.drawOutlineToDebug(g);
+
+       this.window.drawInventorySprites(g);
 
     }
 
@@ -112,25 +144,50 @@ public class InventoryScreen extends BasicGameScreen {
         return ID;
     }
 
+
     private void handleInput() {
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
+            private InventoryScreen instance = InventoryScreen.this;
+
             @Override
             public boolean touchDown (int x, int y, int pointer, int button) {
-                System.out.println("touchdown at x: " + x + " y:" + y);
-                return true;
+
+                // check if user pressed inside a box
+                int tmp = InventoryScreen.this.window.checkForPress(x,y);
+
+                if (tmp != -1 && button == Input.Buttons.LEFT) {
+                    System.out.println("touchdown at x: " + x + " y:" + y);
+                    instance.boxBeingDraggedFrom = tmp;
+                    instance.isDraggedFromBox = true;
+                }
+
+                // handle input only when inventory screen is visible
+                System.out.println(instance.isScreenVisible);
+                return instance.isScreenVisible;
             }
 
             @Override
             public boolean touchUp (int x, int y, int pointer, int button) {
-                return true;
+                // check for user releasing left mouse button
+                if (button == Input.Buttons.LEFT) {
+                    instance.isDraggedFromBox = false;
+                }
+
+                // handle input only when inventory screen is visible
+                return instance.isScreenVisible;
             }
 
             @Override
             public boolean touchDragged (int x, int y, int pointer) {
-                System.out.println("dragged at x: " + x + " y:" + y);
-                return true;
+                // check for user dragging after a boxed was clicked on
+                if (instance.isDraggedFromBox) {
+                    System.out.println("dragged at x: " + x + " y:" + y);
+                }
+
+                // handle input only when inventory screen is visible
+                return instance.isScreenVisible;
             }
         });
     }

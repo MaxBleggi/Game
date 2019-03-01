@@ -14,7 +14,7 @@ public class PlayerBasicClass extends PlayerBaseClass implements Serializable {
     private static final int BASIC_CLASS_DEFAULT_HP = 100;
     private static final int BASIC_CLASS_DEFAULT_HAND_SIZE = 100;
     private static final int BASIC_CLASS_DEFAULT_POWER = 3;
-    private String playerTexture = "player1.png";
+    private String playerTexture = "player.png";
 
     /**
      * Initialize the player
@@ -32,7 +32,7 @@ public class PlayerBasicClass extends PlayerBaseClass implements Serializable {
         super.cardDeck = new CardDeck();
     }
 
-    public String getTexture() {
+    public String getTextureFile() {
         return this.playerTexture;
     }
 

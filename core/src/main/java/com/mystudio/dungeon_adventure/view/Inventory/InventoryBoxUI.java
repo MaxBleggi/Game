@@ -1,5 +1,8 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.model.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.model.Inventory.ItemBase;
 import com.mystudio.dungeon_adventure.model.Inventory.ItemWearable;
@@ -11,18 +14,11 @@ public class InventoryBoxUI {
     private int width;
     private int height;
 
-    // the item's slot, itemAssigned = -1 when empty
-    // 1 = ItemBase
-    // 2 = ItemWearable
-    // 3 = ItemActionable
-    private int itemAssigned;
-    private ItemBase possibleItem_base;
-    private ItemWearable possibleItem_wearable;
-    private ItemActionable possibleItem_actionable;
+    private int itemID;
 
 
     // the sprite for each object
-    public Sprite itemSprite;
+    public Sprite sprite;
 
 
     public InventoryBoxUI(int x, int y, int width, int height) {
@@ -30,59 +26,38 @@ public class InventoryBoxUI {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.itemAssigned = -1;
+        this.sprite = null;
+        this.itemID = -1;
     }
 
     /**
      * Reports the type of item contained
-     * @return 1 = ItemBase, 2 = ItemWearable, 3 = ItemActionable, -1 = empty
+     * @return true if item assigned, false otherwise
      */
-    public int itemAssigned() {
-        return itemAssigned;
+    public boolean hasItem() {
+        return this.sprite != null;
     }
 
-    /* - - -    remove item methods     - - - */
+    public Sprite getSprite() {
+        return this.sprite;
+    }
+
+    /* - - -    remove item     - - - */
 
     /**
      * removes item from slot. Returns that item if it existed
-     * @return item if avaiable, null otherwise
+     * @return itemID if avaiable, -1 otherwise
      */
-    public ItemBase removeItemIfBase() {
-        if (itemAssigned != -1) {
-            ItemBase tmp = this.possibleItem_base;
-            this.possibleItem_base = null;
-            this.itemAssigned = -1;
-            return tmp;
-        }
-        return null;
-    }
+    public int removeItem() {
+        if (this.sprite != null) {
+            this.sprite = null;
 
-    /**
-     * removes item from slot. Returns that item if it existed
-     * @return item if avaiable, null otherwise
-     */
-    public ItemActionable removeItemIfActionable() {
-        if (itemAssigned != -1) {
-            ItemActionable tmp = this.possibleItem_actionable;
-            this.possibleItem_base = null;
-            this.itemAssigned = -1;
-            return tmp;
-        }
-        return null;
-    }
+            int tmp = this.itemID;
+            this.itemID = -1;
 
-    /**
-     * removes item from slot. Returns that item if it existed
-     * @return item if avaiable, null otherwise
-     */
-    public ItemWearable removeItemIfWearable() {
-        if (itemAssigned != -1) {
-            ItemWearable tmp = this.possibleItem_wearable;
-            this.possibleItem_base = null;
-            this.itemAssigned = -1;
             return tmp;
         }
-        return null;
+        return -1;
     }
 
     /* - - -    place item methods     - - - */
@@ -91,41 +66,11 @@ public class InventoryBoxUI {
      * Attempts to place item into slot. Will return false if slot is already used.
      * @return success of placement
      */
-    public boolean placeItemIfEmpty(ItemBase item) {
-        if (this.itemAssigned == -1) {
-            this.possibleItem_base = item;
-            this.itemAssigned = 1;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Attempts to place item into slot. Will return false if slot is already used.
-     * @return success of placement
-     */
-    public boolean placeItemIfEmpty(ItemWearable item) {
-        if (this.itemAssigned == -1) {
-            this.possibleItem_wearable = item;
-            this.itemAssigned = 2;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Attempts to place item into slot. Will return false if slot is already used.
-     * @return success of placement
-     */
-    public boolean placeItemIfEmpty(ItemActionable item) {
-        if (this.itemAssigned == -1) {
-            this.possibleItem_actionable = item;
-            this.itemAssigned = 3;
-
+    public boolean placeItemIfEmpty(int itemID, String spritePath) {
+        if (this.sprite != null) {
+            this.itemID = itemID;
+            this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+            this.sprite.setSize(this.width, this.height);
             return true;
         }
 

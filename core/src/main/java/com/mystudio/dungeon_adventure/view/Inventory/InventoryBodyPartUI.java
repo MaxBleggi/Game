@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import com.mystudio.dungeon_adventure.model.Inventory.ItemWearable;
 import org.mini2Dx.core.graphics.Sprite;
@@ -12,11 +14,10 @@ public class InventoryBodyPartUI {
     private int width;
     private int height;
 
-    private ItemWearable item;
-    private boolean itemAssigned;
+    private int itemID;
 
     // the sprite for each object
-    public Sprite itemSprite;
+    public Sprite sprite;
 
     InventoryBodyPartUI(int x, int y, int width, int height, Wearables bodyPartType) {
         this.x = x;
@@ -24,7 +25,8 @@ public class InventoryBodyPartUI {
         this.width = width;
         this.height = height;
         this.bodyPartType = bodyPartType;
-        this.itemAssigned = false;
+        this.sprite = null;
+        this.itemID = -1;
     }
 
     /**
@@ -35,28 +37,36 @@ public class InventoryBodyPartUI {
         return this.bodyPartType;
     }
 
+    public Sprite getSprite() {
+        return this.sprite;
+    }
+
     /**
      * Removes item from slot
      * @return item removed
      */
-    public ItemWearable removeItem() {
-        this.itemAssigned = false;
+    public int removeItem() {
+        if (this.sprite != null) {
+            this.sprite = null;
 
-        ItemWearable tmp = this.item;
-        this.item = null;
+            int tmp = this.itemID;
+            this.itemID = -1;
 
-        return tmp;
+            return tmp;
+        }
+
+        return -1;
     }
 
     /**
      * Attempts to place item into slot. Will return false if slot is already used.
      * @return success of placement
      */
-    public boolean placeItemIfEmpty(ItemWearable item) {
-        if (!this.itemAssigned) {
-            this.itemAssigned = true;
-
-            this.item = item;
+    public boolean placeItemIfEmpty(int itemID, String spritePath) {
+        if (this.sprite == null) {
+            this.itemID = itemID;
+            this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+            this.sprite.setSize(this.width, this.height);
             return true;
         }
 
@@ -67,8 +77,8 @@ public class InventoryBodyPartUI {
      * Reports whether or not if an item is assigned to this slot
      * @return true if item assigned, false otherwise
      */
-    public boolean isItemAssigned() {
-        return itemAssigned;
+    public boolean hasItem() {
+        return this.sprite != null;
     }
 
 

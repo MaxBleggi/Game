@@ -24,6 +24,7 @@ public class LoadingScreen extends BasicGameScreen {
     public void initialise(GameContainer gc) {
         // if there isn't any previous player data
         if (!SaveState.hasPreviousSaveState(SaveState.PLAYER_SAVE_STATE)) {
+
             // create new player
             PlayerBasicClass player = new PlayerBasicClass("New Player");
 
