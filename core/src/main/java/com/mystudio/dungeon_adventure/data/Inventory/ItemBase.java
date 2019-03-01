@@ -1,11 +1,8 @@
-package com.mystudio.dungeon_adventure.model.Inventory;
+package com.mystudio.dungeon_adventure.data.Inventory;
 import com.mystudio.dungeon_adventure.helpers.ItemTypes;
-import com.mystudio.dungeon_adventure.helpers.Wearables;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
-import org.mini2Dx.core.graphics.Sprite;
 
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
 
 public class ItemBase implements Serializable {
 

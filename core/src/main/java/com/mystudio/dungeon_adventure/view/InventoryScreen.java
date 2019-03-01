@@ -4,10 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.*;
-import com.mystudio.dungeon_adventure.model.Inventory.ItemActionable;
-import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
+import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -35,6 +34,8 @@ public class InventoryScreen extends BasicGameScreen {
     // the box that contains that the item is dragged from
     private boolean isDraggedFromBox = false;
     private int boxBeingDraggedFrom;
+
+    private boolean mousePressFlag = false;
 
 
     /**
@@ -73,11 +74,13 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public void preTransitionIn(Transition transitionIn) {
         this.isScreenVisible = true;
-        handleInput();
+
         ItemActionable test = new ItemActionable(1, "sword", "desc", Rarity.COMMON,
                 Actionables.SWORD, "inventory/items/sword.png");
 
-        this.window.setBoxSprite(0, test.getItemID(), test.getSpritePath());
+        boolean success = this.window.setBoxSprite(0, test.getItemID(), test.getSpritePath());
+
+        System.out.println("success of adding sprite: " + success);
 
         super.preTransitionIn(transitionIn);
     }
@@ -101,6 +104,36 @@ public class InventoryScreen extends BasicGameScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.I)) {
             // navigate to inventory screen
             screenManager.enterGameScreen(DungeonScreen.ID, new FadeOutTransition(), new FadeInTransition());
+        }
+
+        // check for user clicks
+        if (InputHandler.isLeftMousePressedDown) {
+
+            // make sure clicks are only counted once per button press
+            if (!this.mousePressFlag) {
+                this.mousePressFlag = true;
+                int x = InputHandler.mousePressedAtX;
+                int y = InputHandler.mousePressedAtY;
+
+                int tmp = this.window.checkForPress(x, y);
+
+                if (tmp != -1) {
+                    this.boxBeingDraggedFrom = tmp;
+                    this.isDraggedFromBox = true;
+                }
+            }
+        }
+        else {
+            this.mousePressFlag = false;
+            this.isDraggedFromBox = false;
+        }
+
+        // check for user drags
+        if (this.isDraggedFromBox && InputHandler.isLeftMouseDragged) {
+            int x = InputHandler.mouseDraggedX;
+            int y = InputHandler.mouseDraggedY;
+
+            System.out.println("dragged at x: " + x + " y:" + y);
         }
     }
 
@@ -131,7 +164,6 @@ public class InventoryScreen extends BasicGameScreen {
        this.window.drawOutlineToDebug(g);
 
        this.window.drawInventorySprites(g);
-
     }
 
     /**
@@ -142,53 +174,5 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public int getId() {
         return ID;
-    }
-
-
-    private void handleInput() {
-
-        Gdx.input.setInputProcessor(new InputAdapter() {
-
-            private InventoryScreen instance = InventoryScreen.this;
-
-            @Override
-            public boolean touchDown (int x, int y, int pointer, int button) {
-
-                // check if user pressed inside a box
-                int tmp = InventoryScreen.this.window.checkForPress(x,y);
-
-                if (tmp != -1 && button == Input.Buttons.LEFT) {
-                    System.out.println("touchdown at x: " + x + " y:" + y);
-                    instance.boxBeingDraggedFrom = tmp;
-                    instance.isDraggedFromBox = true;
-                }
-
-                // handle input only when inventory screen is visible
-                System.out.println(instance.isScreenVisible);
-                return instance.isScreenVisible;
-            }
-
-            @Override
-            public boolean touchUp (int x, int y, int pointer, int button) {
-                // check for user releasing left mouse button
-                if (button == Input.Buttons.LEFT) {
-                    instance.isDraggedFromBox = false;
-                }
-
-                // handle input only when inventory screen is visible
-                return instance.isScreenVisible;
-            }
-
-            @Override
-            public boolean touchDragged (int x, int y, int pointer) {
-                // check for user dragging after a boxed was clicked on
-                if (instance.isDraggedFromBox) {
-                    System.out.println("dragged at x: " + x + " y:" + y);
-                }
-
-                // handle input only when inventory screen is visible
-                return instance.isScreenVisible;
-            }
-        });
     }
 }

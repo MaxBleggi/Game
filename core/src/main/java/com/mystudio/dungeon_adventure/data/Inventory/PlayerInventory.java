@@ -1,11 +1,10 @@
-package com.mystudio.dungeon_adventure.model.Inventory;
+package com.mystudio.dungeon_adventure.data.Inventory;
 
 import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.helpers.ReturnValues;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;

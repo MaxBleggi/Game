@@ -3,7 +3,6 @@ package com.mystudio.dungeon_adventure.view.Inventory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
-import com.mystudio.dungeon_adventure.model.Inventory.ItemWearable;
 import org.mini2Dx.core.graphics.Sprite;
 
 public class InventoryBodyPartUI {

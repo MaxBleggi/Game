@@ -2,10 +2,6 @@ package com.mystudio.dungeon_adventure.view.Inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.mystudio.dungeon_adventure.helpers.ItemTypes;
-import com.mystudio.dungeon_adventure.model.Inventory.ItemActionable;
-import com.mystudio.dungeon_adventure.model.Inventory.ItemBase;
-import com.mystudio.dungeon_adventure.model.Inventory.ItemWearable;
 import org.mini2Dx.core.graphics.Sprite;
 
 public class InventoryBoxUI {
@@ -67,7 +63,7 @@ public class InventoryBoxUI {
      * @return success of placement
      */
     public boolean placeItemIfEmpty(int itemID, String spritePath) {
-        if (this.sprite != null) {
+        if (this.sprite == null) {
             this.itemID = itemID;
             this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
             this.sprite.setSize(this.width, this.height);

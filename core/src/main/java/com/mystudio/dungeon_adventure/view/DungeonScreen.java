@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mystudio.dungeon_adventure.helpers.GameConstants;
 import com.mystudio.dungeon_adventure.helpers.SaveState;
-import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -66,7 +66,6 @@ public class DungeonScreen extends BasicGameScreen {
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
-
         // open inventory if player pressed I
         if (Gdx.input.isKeyPressed(Input.Keys.I)) {
             // navigate to inventory screen

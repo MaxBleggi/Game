@@ -1,7 +1,7 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
 import com.mystudio.dungeon_adventure.helpers.Wearables;
-import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
@@ -100,34 +100,37 @@ public class InventoryWindowUI {
         //player.inventory;
     }
 
-    public void setBoxSprite(int boxID, int itemID, String spritePath) {
+    public boolean setBoxSprite(int boxID, int itemID, String spritePath) {
+        boolean success = false;
 
         System.out.println(spritePath + " ID:" + boxID);
         if (boxID >= 0 && boxID <= 11) {
-            this.boxes.get(boxID).placeItemIfEmpty(itemID, spritePath);
+            success = this.boxes.get(boxID).placeItemIfEmpty(itemID, spritePath);
         }
         else if (boxID <= 18){
             switch (boxID) {
                 case HEAD:
-                    this.head.placeItemIfEmpty(itemID, spritePath);
+                    success = this.head.placeItemIfEmpty(itemID, spritePath);
                     break;
                 case TORSO:
-                    this.torso.placeItemIfEmpty(itemID, spritePath);
+                    success = this.torso.placeItemIfEmpty(itemID, spritePath);
                     break;
                 case LEGS:
-                    this.legs.placeItemIfEmpty(itemID, spritePath);
+                    success = this.legs.placeItemIfEmpty(itemID, spritePath);
                     break;
                 case FEET:
-                    this.feet.placeItemIfEmpty(itemID, spritePath);
+                    success = this.feet.placeItemIfEmpty(itemID, spritePath);
                     break;
                 case L_HAND:
-                    this.leftHand.placeItemIfEmpty(itemID, spritePath);
+                    success = this.leftHand.placeItemIfEmpty(itemID, spritePath);
                     break;
                 case R_HAND:
-                    this.rightHand.placeItemIfEmpty(itemID, spritePath);
+                    success = this.rightHand.placeItemIfEmpty(itemID, spritePath);
                     break;
             }
          }
+
+        return success;
     }
 
     public void drawInventorySprites(Graphics g) {

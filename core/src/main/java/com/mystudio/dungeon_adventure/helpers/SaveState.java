@@ -1,8 +1,5 @@
 package com.mystudio.dungeon_adventure.helpers;
 
-import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
-
-import javax.annotation.processing.FilerException;
 import java.io.*;
 
 public class SaveState {

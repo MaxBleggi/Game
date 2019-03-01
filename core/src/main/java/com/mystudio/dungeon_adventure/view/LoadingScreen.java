@@ -1,10 +1,9 @@
 package com.mystudio.dungeon_adventure.view;
 
 import com.mystudio.dungeon_adventure.helpers.SaveState;
-import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.playerdata.PlayerDataException;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;

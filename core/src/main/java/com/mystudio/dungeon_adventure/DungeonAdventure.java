@@ -1,5 +1,7 @@
 package com.mystudio.dungeon_adventure;
 
+import com.badlogic.gdx.Gdx;
+import com.mystudio.dungeon_adventure.helpers.GameInputProcessor;
 import com.mystudio.dungeon_adventure.view.DungeonScreen;
 import com.mystudio.dungeon_adventure.view.InventoryScreen;
 import com.mystudio.dungeon_adventure.view.LoadingScreen;
@@ -21,6 +23,9 @@ public class DungeonAdventure extends ScreenBasedGame {
         this.addScreen(new DungeonScreen());
         this.addScreen(new InventoryScreen());
 
+
+        GameInputProcessor inputProcessor = new GameInputProcessor();
+        Gdx.input.setInputProcessor(inputProcessor);
     }
 
     @Override

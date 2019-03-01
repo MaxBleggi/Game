@@ -1,4 +1,4 @@
-package com.mystudio.dungeon_adventure.model.Cards;
+package com.mystudio.dungeon_adventure.data.Cards;
 
 import java.io.Serializable;
 import java.util.ArrayList;
