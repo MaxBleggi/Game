@@ -2,12 +2,8 @@ package com.mystudio.dungeon_adventure.model.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.mystudio.dungeon_adventure.helpers.GameAttributes;
 import com.mystudio.dungeon_adventure.model.Cards.CardDeck;
 import com.mystudio.dungeon_adventure.model.Inventory.PlayerInventory;
-import org.mini2Dx.core.engine.geom.CollisionPoint;
-import org.mini2Dx.core.graphics.Sprite;
-import org.mini2Dx.core.serialization.annotation.Field;
 
 import java.io.Serializable;
 
@@ -19,6 +15,8 @@ import java.io.Serializable;
 public class PlayerBaseClass implements Serializable {
 
     protected static final int MAX_HAND_SIZE = 12;
+
+    int t = 0;
 
     /**
      * Fundamental attributes shared by all player classes
@@ -36,13 +34,13 @@ public class PlayerBaseClass implements Serializable {
     protected int currentPower;
 
     // player's inventory
-    protected PlayerInventory inventory;
+    public PlayerInventory inventory;
 
     // player's card deck
-    protected CardDeck cardDeck;
+    public CardDeck cardDeck;
 
 
-    public PlayerBaseClass(){
+    public PlayerBaseClass() {
         // this class will never be instantiated directly, only extended
     }
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.mystudio.dungeon_adventure.helpers.GameAttributes;
+import com.mystudio.dungeon_adventure.helpers.GameConstants;
 import com.mystudio.dungeon_adventure.helpers.SaveState;
 import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
@@ -38,7 +38,7 @@ public class DungeonScreen extends BasicGameScreen {
     public void initialise(GameContainer gc) {
         // attempt to load the map
         try {
-            this.tiledMap = new DungeonTiledMap(Gdx.files.internal("test1.tmx"));
+            this.tiledMap = new DungeonTiledMap(Gdx.files.internal(GameConstants.TILED_DUNGEON_MAP));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -49,10 +49,16 @@ public class DungeonScreen extends BasicGameScreen {
 
 
 
-        this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, "WallsLayer");
+        this.collisions = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, GameConstants.DUNGEON_COLLISION_LAYER);
 
         this.point = new CollisionPoint();
-        this.sprite = new Sprite(new Texture(Gdx.files.internal(this.player.getTexture())));
+
+        try {
+            this.sprite = new Sprite(new Texture(Gdx.files.internal(this.player.getTextureFile())));
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         sprite.setSize(15,20);
         this.point.set(TILE_SIZE*4,TILE_SIZE*4);
@@ -102,14 +108,14 @@ public class DungeonScreen extends BasicGameScreen {
         int offSetY = 0;
 
         // draw tiled map at 0,0
-        int playerDistanceFromRightEdge = point.getRenderX() % GameAttributes.SCREEN_WIDTH;
-        int playerDistanceFromBottomEdge = point.getRenderY() % GameAttributes.SCREEN_HEIGHT;
+        int playerDistanceFromRightEdge = point.getRenderX() % GameConstants.SCREEN_WIDTH;
+        int playerDistanceFromBottomEdge = point.getRenderY() % GameConstants.SCREEN_HEIGHT;
 
         offSetY = getOffsetY();
         offsetX = getOffsetX();
 
-        int floorLayer = tiledMap.getLayerIndex("groundLayer");
-        int wallsLayer = tiledMap.getLayerIndex("WallsLayer");
+        int floorLayer = tiledMap.getLayerIndex(GameConstants.DUNGEON_GROUND_LAYER);
+        int wallsLayer = tiledMap.getLayerIndex(GameConstants.DUNGEON_WALL_LAYER);
 
 
 
@@ -135,14 +141,14 @@ public class DungeonScreen extends BasicGameScreen {
         int playerY = point.getRenderY();
         int offset = 0;
 
-        if (playerY >= GameAttributes.SCREEN_HEIGHT) {
-            offset = GameAttributes.SCREEN_HEIGHT;
+        if (playerY >= GameConstants.SCREEN_HEIGHT) {
+            offset = GameConstants.SCREEN_HEIGHT;
         }
-        if (playerY >= GameAttributes.SCREEN_HEIGHT*2) {
-            offset = GameAttributes.SCREEN_HEIGHT*2;
+        if (playerY >= GameConstants.SCREEN_HEIGHT*2) {
+            offset = GameConstants.SCREEN_HEIGHT*2;
         }
-        if (playerY >= GameAttributes.SCREEN_HEIGHT*3) {
-            offset = GameAttributes.SCREEN_HEIGHT*3;
+        if (playerY >= GameConstants.SCREEN_HEIGHT*3) {
+            offset = GameConstants.SCREEN_HEIGHT*3;
         }
 
         return offset;
@@ -152,14 +158,14 @@ public class DungeonScreen extends BasicGameScreen {
         int playerX = point.getRenderX();
         int offset = 0;
 
-        if (playerX >= GameAttributes.SCREEN_WIDTH) {
-            offset = GameAttributes.SCREEN_WIDTH;
+        if (playerX >= GameConstants.SCREEN_WIDTH) {
+            offset = GameConstants.SCREEN_WIDTH;
         }
-        if (playerX >= GameAttributes.SCREEN_WIDTH*2) {
-            offset = GameAttributes.SCREEN_WIDTH*2;
+        if (playerX >= GameConstants.SCREEN_WIDTH*2) {
+            offset = GameConstants.SCREEN_WIDTH*2;
         }
-        if (playerX >= GameAttributes.SCREEN_WIDTH*3) {
-            offset = GameAttributes.SCREEN_WIDTH*3;
+        if (playerX >= GameConstants.SCREEN_WIDTH*3) {
+            offset = GameConstants.SCREEN_WIDTH*3;
         }
 
         return offset;

@@ -1,6 +1,7 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
 import com.mystudio.dungeon_adventure.helpers.Wearables;
+import com.mystudio.dungeon_adventure.model.Player.PlayerBasicClass;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
@@ -15,6 +16,7 @@ public class InventoryWindowUI {
     private final int bodyPadding = 10;
     private final int numberofBoxRows = 4;
     private final int numberOfBoxColumns = 3;
+    private final int numberOfBoxes = numberofBoxRows * numberOfBoxColumns;
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -70,7 +72,6 @@ public class InventoryWindowUI {
     private static final int INVENTORY9 = 9;
     private static final int INVENTORY10 = 10;
     private static final int INVENTORY11 = 11;
-    private static final int INVENTORY12 = 12;
     private static final int HEAD = 13;
     private static final int TORSO = 14;
     private static final int LEGS = 15;
@@ -86,12 +87,78 @@ public class InventoryWindowUI {
 
         // width = box - padding - box - padding - box - middle - hand - body - hand
         this.windowWidth = this.boxSize * this.numberOfBoxColumns + this.boxPadding
-                * (this.numberOfBoxColumns - 1) + this.middlePadding + this.boxSize*3;
+                * (this.numberOfBoxColumns - 1) + this.middlePadding + this.boxSize*3 + this.bodyPadding*2;
 
         // height = portrait - upperPadding - box - padding - box - padding - box padding - box
-        this.windowHeight = this.portraitSize +  this.boxSize * this.numberOfBoxColumns
-                + boxPadding * (this.numberOfBoxColumns - 1) + this.upperSectionPadding;
+        this.windowHeight = this.portraitSize +  this.boxSize * this.numberofBoxRows
+                + boxPadding * (this.numberofBoxRows - 1) + this.upperSectionPadding;
+
+        generatePositioning();
     }
+
+    public void setSpritesFromModel(PlayerBasicClass player) {
+        //player.inventory;
+    }
+
+    public void setBoxSprite(int boxID, int itemID, String spritePath) {
+
+        System.out.println(spritePath + " ID:" + boxID);
+        if (boxID >= 0 && boxID <= 11) {
+            this.boxes.get(boxID).placeItemIfEmpty(itemID, spritePath);
+        }
+        else if (boxID <= 18){
+            switch (boxID) {
+                case HEAD:
+                    this.head.placeItemIfEmpty(itemID, spritePath);
+                    break;
+                case TORSO:
+                    this.torso.placeItemIfEmpty(itemID, spritePath);
+                    break;
+                case LEGS:
+                    this.legs.placeItemIfEmpty(itemID, spritePath);
+                    break;
+                case FEET:
+                    this.feet.placeItemIfEmpty(itemID, spritePath);
+                    break;
+                case L_HAND:
+                    this.leftHand.placeItemIfEmpty(itemID, spritePath);
+                    break;
+                case R_HAND:
+                    this.rightHand.placeItemIfEmpty(itemID, spritePath);
+                    break;
+            }
+         }
+    }
+
+    public void drawInventorySprites(Graphics g) {
+        for (InventoryBoxUI box : this.boxes) {
+            // for every box that has an item
+            if (box.hasItem()) {
+                g.drawSprite(box.getSprite(), box.getX(), box.getY());
+            }
+        }
+
+        // draw body parts if they have items
+        if (this.head.hasItem()) {
+            g.drawSprite(this.head.getSprite(), this.head.getX(), this.head.getY());
+        }
+        if (this.torso.hasItem()) {
+            g.drawSprite(this.torso.getSprite(), this.torso.getX(), this.torso.getY());
+        }
+        if (this.legs.hasItem()) {
+            g.drawSprite(this.legs.getSprite(), this.legs.getX(), this.legs.getY());
+        }
+        if (this.feet.hasItem()) {
+            g.drawSprite(this.feet.getSprite(), this.feet.getX(), this.feet.getY());
+        }
+        if (this.leftHand.hasItem()) {
+            g.drawSprite(this.leftHand.getSprite(), this.leftHand.getX(), this.leftHand.getY());
+        }
+        if (this.rightHand.hasItem()) {
+            g.drawSprite(this.rightHand.getSprite(), this.rightHand.getX(), this.rightHand.getY());
+        }
+    }
+
 
     /**
      * Required after initialization of object. Calculates the coord's for each element
@@ -117,11 +184,11 @@ public class InventoryWindowUI {
         int adjY = y + this.portraitSize + this.upperSectionPadding;
         int adjX = x;
 
-        this.boxes = new ArrayList<InventoryBoxUI>(12);
+        this.boxes = new ArrayList<InventoryBoxUI>(this.numberOfBoxes);
 
         // create 4 row of 3 boxes
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < this.numberofBoxRows; i++) {
+            for (int j = 0; j < this.numberOfBoxColumns; j++) {
                 this.boxes.add(new InventoryBoxUI(adjX, adjY, this.boxSize, this.boxSize));
                 adjX += this.boxSize + this.boxPadding;
             }
@@ -158,115 +225,137 @@ public class InventoryWindowUI {
 
         // return false if it's not even inside the window
         if (x < this.portraitX || x > this.portraitX + this.windowWidth) {
+            System.out.println("out of window width");
             return -1;
         }
         else if (y < this.portraitY || y > this.portraitY + this.windowHeight) {
+            System.out.println("out of window height");
             return -1;
         }
 
-        if (x < this.boxes.get(2).getX()) {
+      //  if (x < this.boxes.get(2).getX()) {
             // check left side of window
 
             // the only clickable areas are on the bottom section
-            if (y > this.portraitY + this.portraitSize) {
+            if (y >= this.portraitY + this.portraitSize) {
 
                 // check every box
-                if (this.boxes.get(0).isInClickedOn(x,y)) {
-                    System.out.println("inventory0");
+                if (this.boxes.get(0).isClickedOn(x,y)) {
                     return INVENTORY0;
                 }
-                if (this.boxes.get(1).isInClickedOn(x,y)) {
-                    System.out.println("inventory1");
+                else if (this.boxes.get(1).isClickedOn(x,y)) {
                     return INVENTORY1;
                 }
-                if (this.boxes.get(2).isInClickedOn(x,y)) {
-                    System.out.println("inventory2");
+                else if (this.boxes.get(2).isClickedOn(x,y)) {
                     return INVENTORY2;
                 }
-                if (this.boxes.get(3).isInClickedOn(x,y)) {
-                    System.out.println("inventory3");
+                else if (this.boxes.get(3).isClickedOn(x,y)) {
                     return INVENTORY3;
                 }
-                if (this.boxes.get(4).isInClickedOn(x,y)) {
-                    System.out.println("inventory4");
+                else if (this.boxes.get(4).isClickedOn(x,y)) {
                     return INVENTORY4;
                 }
-                if (this.boxes.get(5).isInClickedOn(x,y)) {
-                    System.out.println("inventory5");
+                else if (this.boxes.get(5).isClickedOn(x,y)) {
                     return INVENTORY5;
                 }
-                if (this.boxes.get(6).isInClickedOn(x,y)) {
-                    System.out.println("inventory6");
+                else if (this.boxes.get(6).isClickedOn(x,y)) {
                     return INVENTORY6;
                 }
-                if (this.boxes.get(7).isInClickedOn(x,y)) {
-                    System.out.println("inventory7");
+                else if (this.boxes.get(7).isClickedOn(x,y)) {
                     return INVENTORY7;
                 }
-                if (this.boxes.get(8).isInClickedOn(x,y)) {
-                    System.out.println("inventory8");
+                else if (this.boxes.get(8).isClickedOn(x,y)) {
                     return INVENTORY8;
                 }
-                if (this.boxes.get(9).isInClickedOn(x,y)) {
-                    System.out.println("inventory9");
+                else if (this.boxes.get(9).isClickedOn(x,y)) {
                     return INVENTORY9;
                 }
-                if (this.boxes.get(10).isInClickedOn(x,y)) {
-                    System.out.println("inventory10");
+                else if (this.boxes.get(10).isClickedOn(x,y)) {
                     return INVENTORY10;
                 }
-                if (this.boxes.get(11).isInClickedOn(x,y)) {
-                    System.out.println("inventory11");
+                else if (this.boxes.get(11).isClickedOn(x,y)) {
                     return INVENTORY11;
                 }
-                if (this.boxes.get(12).isInClickedOn(x,y)) {
-                    System.out.println("inventory12");
-                    return INVENTORY12;
+                else if (this.rightHand.isClickedOn(x,y)) {
+                    return R_HAND;
                 }
-            }
-        }
-        else {
+                else if (this.leftHand.isClickedOn(x,y)) {
+                    return L_HAND;
+                }
+                else if (this.head.isClickedOn(x,y)) {
+                    return HEAD;
+                }
+                else if (this.torso.isClickedOn(x,y)) {
+                    return TORSO;
+                }
+                else if (this.legs.isClickedOn(x,y)) {
+                    return LEGS;
+                }
+                else if (this.feet.isClickedOn(x,y)) {
+                    return FEET;
+           }
+       // }
+       /* else {
             // check right side of window
 
             // the only clickable areas are on the bottom section
             if (y > this.portraitY + this.portraitSize) {
-                if (this.rightHand.isInClickedOn(x,y)) {
+
+                if (this.rightHand.isClickedOn(x,y)) {
                     System.out.println("r hand");
                     return R_HAND;
                 }
-                if (this.leftHand.isInClickedOn(x,y)) {
+                else if (this.leftHand.isClickedOn(x,y)) {
                     System.out.println("l hand");
                     return L_HAND;
                 }
-                if (this.head.isInClickedOn(x,y)) {
+                else if (this.head.isClickedOn(x,y)) {
                     System.out.println("head");
                     return HEAD;
                 }
-                if (this.torso.isInClickedOn(x,y)) {
+                else if (this.torso.isClickedOn(x,y)) {
                     System.out.println("torso");
                     return TORSO;
                 }
-                if (this.legs.isInClickedOn(x,y)) {
+                else if (this.legs.isClickedOn(x,y)) {
                     System.out.println("legs");
                     return LEGS;
                 }
-                if (this.feet.isInClickedOn(x,y)) {
+                else if (this.feet.isClickedOn(x,y)) {
                     System.out.println("feet");
                     return FEET;
                 }
-            }
+            }*/
         }
 
         return -1;
     }
 
+    public int getX() {
+        // portrait start on the top left of the window
+        return this.portraitX;
+    }
+
+    public int getY() {
+        // portrait start on the top left of the window
+        return this.portraitY;
+    }
+
+    public int getWidth() {
+        return this.windowWidth;
+    }
+
+    public int getHeight() {
+        return this.windowHeight;
+    }
+
+
     public void drawOutlineToDebug(Graphics g) {
 
         g.drawRect(this.portraitX, this.portraitY, this.portraitSize, this.portraitSize);
 
-        for (int i = 0; i < 12; i++) {
-            InventoryBoxUI tmp = this.boxes.get(i);
-            g.drawRect(tmp.getX(), tmp.getY(), tmp.getWidth(), tmp.getHeight());
+        for (InventoryBoxUI box : this.boxes) {
+            g.drawRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
         }
 
         g.drawRect(this.leftHand.getX(), this.leftHand.getY(), this.leftHand.getWidth(), this.leftHand.getHeight());
