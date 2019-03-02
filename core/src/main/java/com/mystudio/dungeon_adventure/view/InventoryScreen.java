@@ -2,7 +2,6 @@ package com.mystudio.dungeon_adventure.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.mystudio.dungeon_adventure.helpers.*;
 import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
@@ -120,25 +119,28 @@ public class InventoryScreen extends BasicGameScreen {
                 if (tmp != -1) {
                     this.boxBeingDraggedFrom = tmp;
                     this.isDraggedFromBox = true;
-                    this.window.spritePickedUp(tmp, x, y);
+                    this.window.pickupSprite(tmp, x, y);
                 }
             }
         }
+        // user releases left mouse
         else {
-            // sprite released
+            // find out where sprite is released
+
+            // release sprite
             this.mousePressFlag = false;
             this.isDraggedFromBox = false;
             this.boxBeingDraggedFrom = -1;
-            this.window.spriteReleasedOutsideBox();
+            this.window.releaseSpriteOutsideBox();
         }
 
-        // check for user drags
+        // check for user dragging sprite
         if (this.isDraggedFromBox && InputHandler.isLeftMouseDragged) {
             int x = InputHandler.mouseDraggedX;
             int y = InputHandler.mouseDraggedY;
 
             // update the sprite's position if it's dragged
-            this.window.spriteDragged(x, y);
+            this.window.dragSprite(x, y);
 
             System.out.println("dragged at x: " + x + " y:" + y);
         }
@@ -170,7 +172,7 @@ public class InventoryScreen extends BasicGameScreen {
        // g.drawSprite(this.windowBackground, windowX, windowY);
        this.window.drawOutlineToDebug(g);
 
-       this.window.drawInventorySprites(g);
+       this.window.drawSprites(g);
     }
 
     /**

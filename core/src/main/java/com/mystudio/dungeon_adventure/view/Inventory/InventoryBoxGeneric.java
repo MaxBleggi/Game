@@ -4,20 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import org.mini2Dx.core.graphics.Sprite;
 
-public class InventoryBoxUI {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-
-    private int itemID;
-
+public class InventoryBoxGeneric {
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
 
     // the sprite for each object
-    public Sprite sprite;
+    protected Sprite sprite;
+
+    // keep track of what item is assigned to box
+    protected int itemID;
 
 
-    public InventoryBoxUI(int x, int y, int width, int height) {
+    /* - - -    Constructors    - - - */
+
+    public InventoryBoxGeneric(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -26,26 +28,19 @@ public class InventoryBoxUI {
         this.itemID = -1;
     }
 
-    /**
-     * Reports the type of item contained
-     * @return true if item assigned, false otherwise
-     */
-    public boolean hasItem() {
-        return this.sprite != null;
+    public InventoryBoxGeneric() {
+
     }
 
-    public Sprite getSprite() {
-        return this.sprite;
-    }
 
-    /* - - -    remove item     - - - */
+    /* - - -    Sprite manipulation methods    - - - */
 
     /**
      * removes item from slot. Returns that item if it existed
      * @return itemID if avaiable, -1 otherwise
      */
-    public int removeItem() {
-        if (this.sprite != null) {
+    public int removeItemIfNotEmpty() {
+        if (hasItem()) {
             this.sprite = null;
 
             int tmp = this.itemID;
@@ -55,8 +50,6 @@ public class InventoryBoxUI {
         }
         return -1;
     }
-
-    /* - - -    place item methods     - - - */
 
     /**
      * Attempts to place item into slot. Will return false if slot is already used.
@@ -73,8 +66,6 @@ public class InventoryBoxUI {
         return false;
     }
 
-    /* - - -    UI related methods     - - - */
-
     /**
      * Used to determine if the user's mouse click is inside the box's area.
      *
@@ -89,28 +80,77 @@ public class InventoryBoxUI {
         return false;
     }
 
+
+    /* - - -    Setters and Getters     - - - */
+
+    /**
+     * Reports the type of item contained
+     * @return true if item assigned, false otherwise
+     */
+    public boolean hasItem() {
+        return this.sprite != null;
+    }
+
+    /**
+     * Retrieve's item's sprite
+     * @return sprite, null is contains no sprite
+     */
+    public Sprite getItemSprite() {
+        return this.sprite;
+    }
+
+    /**
+     * Resets the coords of the box
+     * @param x the x coord
+     * @param y the y coord
+     */
     public void resetCoord(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Resets the box's dimensions and sprite, if assigned
+     * @param w width of box
+     * @param h height of box
+     */
     public void resetDimension(int w, int h) {
         this.width = w;
         this.height = h;
+
+        if (hasItem()) {
+            this.sprite.setSize(w, h);
+        }
     }
 
+    /**
+     * Retrieves x coord of box
+     * @return x coord
+     */
     public int getX() {
         return this.x;
     }
 
+    /**
+     * Retrieves y coord of box
+     * @return y coord
+     */
     public int getY() {
         return this.y;
     }
 
+    /**
+     * Retrieves width of box
+     * @return width
+     */
     public int getWidth() {
         return this.width;
     }
 
+    /**
+     * Retrieves height of box
+     * @return height
+     */
     public int getHeight() {
         return this.height;
     }

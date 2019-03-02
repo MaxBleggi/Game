@@ -9,22 +9,28 @@ import java.util.ArrayList;
 
 public class InventoryWindowUI {
 
-    /* - - -  Edit window dimensions with these  - - - */
-    private final int boxPadding = 10;
-    private final int middlePadding = 20;
-    private final int upperSectionPadding = 20;
-    private final int bodyPadding = 10;
-    private final int numberofBoxRows = 4;
-    private final int numberOfBoxColumns = 3;
-    private final int numberOfBoxes = numberofBoxRows * numberOfBoxColumns;
+    /* - - -  Constants  - - - */
+    // window dimensions
+    private final static int boxPadding = 10;
+    private final static int middlePadding = 20;
+    private final static int upperSectionPadding = 20;
+    private final static int bodyPadding = 10;
+    private final static int numberOfBoxRows = 4;
+    private final static int numberOfBoxColumns = 3;
 
+    private static final int[] INVENTORY_BOXES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    private static final int HEAD = 13;
+    private static final int TORSO = 14;
+    private static final int LEGS = 15;
+    private static final int FEET = 16;
+    private static final int L_HAND = 17;
+    private static final int R_HAND = 18;
     /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    // attributes of the window
-    // screen refers to the user's screen
-    // window refers to the UI being created
+    // screen is the game screen (window of the application)
     private int screenWidth;
     private int screenHeight;
+    // window is the inventory window (i.e. this class)
     private int windowWidth;
     private int windowHeight;
     private int boxSize;
@@ -46,45 +52,27 @@ public class InventoryWindowUI {
     /* - - - - - - - - - - - - - - - - - - - - - */
 
     /* - - -  The bottom section of the window - - - */
-    private ArrayList<InventoryBoxUI> boxes;
+    private ArrayList<InventoryBoxGeneric> boxes;
 
     // body parts
-    private InventoryBodyPartUI head;
-    private InventoryBodyPartUI torso;
-    private InventoryBodyPartUI legs;
-    private InventoryBodyPartUI feet;
+    private InventoryBoxBodyPart head;
+    private InventoryBoxBodyPart torso;
+    private InventoryBoxBodyPart legs;
+    private InventoryBoxBodyPart feet;
 
     // hands
-    private InventoryHandsUI leftHand;
-    private InventoryHandsUI rightHand;
+    private InventoryBoxHands leftHand;
+    private InventoryBoxHands rightHand;
     /* - - - - - - - - - - - - - - - - - - - - - */
 
-    // box IDs
-    private static final int INVENTORY0 = 0;
-    private static final int INVENTORY1 = 1;
-    private static final int INVENTORY2 = 2;
-    private static final int INVENTORY3 = 3;
-    private static final int INVENTORY4 = 4;
-    private static final int INVENTORY5 = 5;
-    private static final int INVENTORY6 = 6;
-    private static final int INVENTORY7 = 7;
-    private static final int INVENTORY8 = 8;
-    private static final int INVENTORY9 = 9;
-    private static final int INVENTORY10 = 10;
-    private static final int INVENTORY11 = 11;
-    private static final int HEAD = 13;
-    private static final int TORSO = 14;
-    private static final int LEGS = 15;
-    private static final int FEET = 16;
-    private static final int L_HAND = 17;
-    private static final int R_HAND = 18;
-
+    // used to calculate sprite dragging via the mouse
     private int spriteDraggedID = -1;
     private int spriteDraggedOffsetX;
     private int spriteDraggedOffsetY;
     private int spriteDraggedX;
     private int spriteDraggedY;
 
+    /* - - -    Constructor    - - - */
     public InventoryWindowUI(int screenWidth, int screenHeight, int boxSize, int portraitSize) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
@@ -92,26 +80,32 @@ public class InventoryWindowUI {
         this.portraitSize = portraitSize;
 
         // width = box - padding - box - padding - box - middle - hand - body - hand
-        this.windowWidth = this.boxSize * this.numberOfBoxColumns + this.boxPadding
-                * (this.numberOfBoxColumns - 1) + this.middlePadding + this.boxSize*3 + this.bodyPadding*2;
+        this.windowWidth = this.boxSize * numberOfBoxColumns + boxPadding
+                * (numberOfBoxColumns - 1) + middlePadding + this.boxSize*3 + bodyPadding*2;
 
         // height = portrait - upperPadding - box - padding - box - padding - box padding - box
-        this.windowHeight = this.portraitSize +  this.boxSize * this.numberofBoxRows
-                + boxPadding * (this.numberofBoxRows - 1) + this.upperSectionPadding;
+        this.windowHeight = this.portraitSize +  this.boxSize * numberOfBoxRows
+                + boxPadding * (numberOfBoxRows - 1) + upperSectionPadding;
 
         generatePositioning();
     }
 
-    public void setSpritesFromModel(PlayerBasicClass player) {
-        //player.inventory;
-    }
 
-    public void spritePickedUp(int boxID, int x, int y) {
+    /* - - -    methods for sprite dragging    - - - */
+
+
+    /**
+     * Picks up a sprite to be dragged.
+     * @param boxID ID of box
+     * @param x coord of mouse click
+     * @param y coord of mouse click
+     */
+    public void pickupSprite(int boxID, int x, int y) {
         this.spriteDraggedID = boxID;
         this.spriteDraggedX = x;
         this.spriteDraggedY = y;
 
-        for (int i = 0; i < this.numberOfBoxes; i++) {
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
             if (boxID == i) {
                 this.spriteDraggedOffsetX = x - this.boxes.get(i).getX();
                 this.spriteDraggedOffsetY = y - this.boxes.get(i).getY();
@@ -146,7 +140,13 @@ public class InventoryWindowUI {
         }
     }
 
-    public boolean spriteDragged(int x, int y) {
+    /***
+     * Changes the x & y for the dragged sprite
+     * @param x new dragged x for sprite
+     * @param y new dragged y for sprite
+     * @return true if a sprite is being dragged, false otherwise
+     */
+    public boolean dragSprite(int x, int y) {
         if (this.spriteDraggedID != -1) {
             this.spriteDraggedX = x;
             this.spriteDraggedY = y;
@@ -155,11 +155,14 @@ public class InventoryWindowUI {
         return false;
     }
 
-    public void spriteReleasedOutsideBox() {
+    /**
+     * Resets the drag coords if the sprite was released outside the bounds of a box
+     */
+    public void releaseSpriteOutsideBox() {
         // reset the sprite's coords to original box
         int boxID = this.spriteDraggedID;
 
-        for (int i = 0; i < this.numberOfBoxes; i++) {
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
             if (boxID == i) {
                 this.spriteDraggedX = this.boxes.get(i).getX();
                 this.spriteDraggedY = this.boxes.get(i).getY();
@@ -199,6 +202,33 @@ public class InventoryWindowUI {
         this.spriteDraggedID = -1;
     }
 
+    // TODO
+    public void spriteReleasedInsideBox(int boxID) {
+        // reset the sprite's coords to new box
+
+        // remove sprite from old box
+
+
+        // assign sprite to new box
+
+    }
+
+    /* - - - - - - - - - - - - - - - - - */
+
+
+    /* - - -    methods for setting and drawing sprites    - - - */
+
+    public void setSpritesFromModel(PlayerBasicClass player) {
+        //player.inventory;
+    }
+
+    /**
+     * Sets the sprite of specified box
+     * @param boxID ID of box for the sprite
+     * @param itemID ID of item associated with sprite
+     * @param spritePath file path of sprite resource file
+     * @return true if successful, false otherwise
+     */
     public boolean setBoxSprite(int boxID, int itemID, String spritePath) {
         boolean success = false;
 
@@ -232,10 +262,15 @@ public class InventoryWindowUI {
         return success;
     }
 
-    public void drawInventorySprites(Graphics g) {
+    /**
+     * Draws the sprites of every box, if those boxes contain sprites
+     * @param g Graphics of the render method
+     */
+    public void drawSprites(Graphics g) {
 
-        for (int i = 0; i < this.numberOfBoxes; i++) {
-            InventoryBoxUI box = this.boxes.get(i);
+        // draw each box's sprite, if it has one
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+            InventoryBoxGeneric box = this.boxes.get(i);
 
             // for every box that has an item
             if (box.hasItem()) {
@@ -243,99 +278,113 @@ public class InventoryWindowUI {
                 if (this.spriteDraggedID == i) {
                     // use the dragged coords instead
                     System.out.println("offset x: " + this.spriteDraggedOffsetX + " y: " + this.spriteDraggedOffsetY);
-                    g.drawSprite(box.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                    g.drawSprite(box.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                             this.spriteDraggedY - this.spriteDraggedOffsetY);
                 }
                 else {
-                    g.drawSprite(box.getSprite(), box.getX(), box.getY());
+                    g.drawSprite(box.getItemSprite(), box.getX(), box.getY());
                 }
             }
         }
 
-        // draw body parts if they have items
+        // draw head if it has an item
         if (this.head.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == HEAD) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.head.getX();
                 int yDiff = this.spriteDraggedY - this.head.getY();
-                g.drawSprite(this.head.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.head.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.head.getSprite(), this.head.getX(), this.head.getY());
+                g.drawSprite(this.head.getItemSprite(), this.head.getX(), this.head.getY());
             }
         }
+
+        // draw torso if it has an item
         if (this.torso.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == TORSO) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.torso.getX();
                 int yDiff = this.spriteDraggedY - this.torso.getY();
-                g.drawSprite(this.torso.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.torso.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.torso.getSprite(), this.torso.getX(), this.torso.getY());
+                g.drawSprite(this.torso.getItemSprite(), this.torso.getX(), this.torso.getY());
             }
         }
+
+        // draw legs if it has an item
         if (this.legs.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == LEGS) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.legs.getX();
                 int yDiff = this.spriteDraggedY - this.legs.getY();
-                g.drawSprite(this.legs.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.legs.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.legs.getSprite(), this.legs.getX(), this.legs.getY());
+                g.drawSprite(this.legs.getItemSprite(), this.legs.getX(), this.legs.getY());
             }
         }
+
+        // draw feet if it has an item
         if (this.feet.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == FEET) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.feet.getX();
                 int yDiff = this.spriteDraggedY - this.feet.getY();
-                g.drawSprite(this.feet.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.feet.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.feet.getSprite(), this.feet.getX(), this.feet.getY());
+                g.drawSprite(this.feet.getItemSprite(), this.feet.getX(), this.feet.getY());
             }
         }
+
+        // draw left hand if it has an item
         if (this.leftHand.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == L_HAND) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.leftHand.getX();
                 int yDiff = this.spriteDraggedY - this.leftHand.getY();
-                g.drawSprite(this.leftHand.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.leftHand.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.leftHand.getSprite(), this.leftHand.getX(), this.leftHand.getY());
+                g.drawSprite(this.leftHand.getItemSprite(), this.leftHand.getX(), this.leftHand.getY());
             }
         }
+
+        // draw right hand if it has an item
         if (this.rightHand.hasItem()) {
             // check if this box's sprite is being dragged
             if (this.spriteDraggedID == R_HAND) {
                 // use the dragged coords instead
                 int xDiff = this.spriteDraggedX - this.rightHand.getX();
                 int yDiff = this.spriteDraggedY - this.rightHand.getY();
-                g.drawSprite(this.rightHand.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                g.drawSprite(this.rightHand.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                         this.spriteDraggedY - this.spriteDraggedOffsetY);
             }
             else {
-                g.drawSprite(this.rightHand.getSprite(), this.rightHand.getX(), this.rightHand.getY());
+                g.drawSprite(this.rightHand.getItemSprite(), this.rightHand.getX(), this.rightHand.getY());
             }
         }
     }
 
+    /* - - - - - - - - - - - - - - - - - */
+
+
+    /* - - -    methods related to coordinates of boxes    - - - */
 
     /**
-     * Required after initialization of object. Calculates the coord's for each element
+     * Required after initialization of object. Calculates the coords for each element
      */
     public void generatePositioning() {
         // center window onto screen
@@ -355,47 +404,51 @@ public class InventoryWindowUI {
         // create the boxes
 
         // create 4 row of 3 boxes
-        int adjY = y + this.portraitSize + this.upperSectionPadding;
+        int adjY = y + this.portraitSize + upperSectionPadding;
         int adjX = x;
 
-        this.boxes = new ArrayList<InventoryBoxUI>(this.numberOfBoxes);
+        this.boxes = new ArrayList<InventoryBoxGeneric>(INVENTORY_BOXES.length);
 
         // create 4 row of 3 boxes
-        for (int i = 0; i < this.numberofBoxRows; i++) {
-            for (int j = 0; j < this.numberOfBoxColumns; j++) {
-                this.boxes.add(new InventoryBoxUI(adjX, adjY, this.boxSize, this.boxSize));
-                adjX += this.boxSize + this.boxPadding;
+        for (int i = 0; i < numberOfBoxRows; i++) {
+            for (int j = 0; j < numberOfBoxColumns; j++) {
+                this.boxes.add(new InventoryBoxGeneric(adjX, adjY, this.boxSize, this.boxSize));
+                adjX += this.boxSize + boxPadding;
             }
             adjX = x;
-            adjY += this.boxSize + this.boxPadding;
+            adjY += this.boxSize + boxPadding;
         }
 
         // left hand
-        int handsY = y + this.portraitSize + this.upperSectionPadding + this.boxSize + this.boxSize/2;
+        int handsY = y + this.portraitSize + upperSectionPadding + this.boxSize + this.boxSize/2;
         adjX = x + this.boxSize*3 + boxPadding*2 + middlePadding;
-        this.leftHand = new InventoryHandsUI(adjX, handsY, this.boxSize, this.boxSize,true);
+        this.leftHand = new InventoryBoxHands(adjX, handsY, this.boxSize, this.boxSize,true);
 
         // create  the body parts
         adjX += this.leftHand.getWidth() + bodyPadding;
-        adjY = y + this.portraitSize + this.upperSectionPadding;
-        this.head = new InventoryBodyPartUI(adjX, adjY, this.boxSize, this.boxSize, Wearables.HEAD);
+        adjY = y + this.portraitSize + upperSectionPadding;
+        this.head = new InventoryBoxBodyPart(adjX, adjY, this.boxSize, this.boxSize, Wearables.HEAD);
         adjY += this.head.getHeight() + bodyPadding;
-        this.torso = new InventoryBodyPartUI(adjX, adjY, this.boxSize, this.boxSize, Wearables.TORSO);
+        this.torso = new InventoryBoxBodyPart(adjX, adjY, this.boxSize, this.boxSize, Wearables.TORSO);
         adjY += this.torso.getHeight() + bodyPadding;
-        this.legs = new InventoryBodyPartUI(adjX, adjY, this.boxSize, this.boxSize, Wearables.LEGS);
+        this.legs = new InventoryBoxBodyPart(adjX, adjY, this.boxSize, this.boxSize, Wearables.LEGS);
         adjY += this.legs.getHeight() + bodyPadding;
-        this.feet = new InventoryBodyPartUI(adjX, adjY, this.boxSize, this.boxSize, Wearables.FEET);
+        this.feet = new InventoryBoxBodyPart(adjX, adjY, this.boxSize, this.boxSize, Wearables.FEET);
 
         // right hand
         adjX += this.torso.getWidth() + bodyPadding;
-        this.rightHand = new InventoryHandsUI(adjX, handsY, this.boxSize, this.boxSize,false);
+        this.rightHand = new InventoryBoxHands(adjX, handsY, this.boxSize, this.boxSize,false);
     }
 
     /**
      * Determines if the user pressed on any area inside an inventory box
-     * @return -1 if not inside any box, box's ID otherwise
+     * @param x the x coord of user mouse press
+     * @param y the y coord of user mouse press
+     * @return ID of box clicked on
      */
     public int checkForPress(int x, int y) {
+
+        int returnID = -1;
 
         // return false if it's not even inside the window
         if (x < this.portraitX || x > this.portraitX + this.windowWidth) {
@@ -407,128 +460,79 @@ public class InventoryWindowUI {
             return -1;
         }
 
-      //  if (x < this.boxes.get(2).getX()) {
-            // check left side of window
+        // the only clickable areas are on the bottom section
+        if (y >= this.portraitY + this.portraitSize) {
+            // check every inventory box
+            for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+                if (this.boxes.get(i).isClickedOn(x,y)) {
+                    returnID = INVENTORY_BOXES[i];
+                }
+            }
 
-            // the only clickable areas are on the bottom section
-            if (y >= this.portraitY + this.portraitSize) {
-
-                // check every box
-                if (this.boxes.get(0).isClickedOn(x,y)) {
-                    return INVENTORY0;
-                }
-                else if (this.boxes.get(1).isClickedOn(x,y)) {
-                    return INVENTORY1;
-                }
-                else if (this.boxes.get(2).isClickedOn(x,y)) {
-                    return INVENTORY2;
-                }
-                else if (this.boxes.get(3).isClickedOn(x,y)) {
-                    return INVENTORY3;
-                }
-                else if (this.boxes.get(4).isClickedOn(x,y)) {
-                    return INVENTORY4;
-                }
-                else if (this.boxes.get(5).isClickedOn(x,y)) {
-                    return INVENTORY5;
-                }
-                else if (this.boxes.get(6).isClickedOn(x,y)) {
-                    return INVENTORY6;
-                }
-                else if (this.boxes.get(7).isClickedOn(x,y)) {
-                    return INVENTORY7;
-                }
-                else if (this.boxes.get(8).isClickedOn(x,y)) {
-                    return INVENTORY8;
-                }
-                else if (this.boxes.get(9).isClickedOn(x,y)) {
-                    return INVENTORY9;
-                }
-                else if (this.boxes.get(10).isClickedOn(x,y)) {
-                    return INVENTORY10;
-                }
-                else if (this.boxes.get(11).isClickedOn(x,y)) {
-                    return INVENTORY11;
-                }
-                else if (this.rightHand.isClickedOn(x,y)) {
-                    return R_HAND;
-                }
-                else if (this.leftHand.isClickedOn(x,y)) {
-                    return L_HAND;
-                }
-                else if (this.head.isClickedOn(x,y)) {
-                    return HEAD;
-                }
-                else if (this.torso.isClickedOn(x,y)) {
-                    return TORSO;
-                }
-                else if (this.legs.isClickedOn(x,y)) {
-                    return LEGS;
-                }
-                else if (this.feet.isClickedOn(x,y)) {
-                    return FEET;
-           }
-       // }
-       /* else {
-            // check right side of window
-
-            // the only clickable areas are on the bottom section
-            if (y > this.portraitY + this.portraitSize) {
-
-                if (this.rightHand.isClickedOn(x,y)) {
-                    System.out.println("r hand");
-                    return R_HAND;
-                }
-                else if (this.leftHand.isClickedOn(x,y)) {
-                    System.out.println("l hand");
-                    return L_HAND;
-                }
-                else if (this.head.isClickedOn(x,y)) {
-                    System.out.println("head");
-                    return HEAD;
-                }
-                else if (this.torso.isClickedOn(x,y)) {
-                    System.out.println("torso");
-                    return TORSO;
-                }
-                else if (this.legs.isClickedOn(x,y)) {
-                    System.out.println("legs");
-                    return LEGS;
-                }
-                else if (this.feet.isClickedOn(x,y)) {
-                    System.out.println("feet");
-                    return FEET;
-                }
-            }*/
+            // check every body part for click
+            if (this.rightHand.isClickedOn(x, y)) {
+                returnID = R_HAND;
+            } else if (this.leftHand.isClickedOn(x, y)) {
+                returnID = L_HAND;
+            } else if (this.head.isClickedOn(x, y)) {
+                returnID = HEAD;
+            } else if (this.torso.isClickedOn(x, y)) {
+                returnID = TORSO;
+            } else if (this.legs.isClickedOn(x, y)) {
+                returnID = LEGS;
+            } else if (this.feet.isClickedOn(x, y)) {
+                returnID = FEET;
+            }
         }
 
-        return -1;
+        return returnID;
     }
 
+    /* - - - - - - - - - - - - - - - - - */
+
+
+    /**
+     * Retrieve the x coord of window
+     * @return x coord of window
+     */
     public int getX() {
         // portrait start on the top left of the window
         return this.portraitX;
     }
 
+    /**
+     * Retrieve the y coord of window
+     * @return y coord of window
+     */
     public int getY() {
         // portrait start on the top left of the window
         return this.portraitY;
     }
 
+    /**
+     * Retrieve the width of window
+     * @return width of window
+     */
     public int getWidth() {
         return this.windowWidth;
     }
 
+    /**
+     * Retrieve the height of window
+     * @return height of window
+     */
     public int getHeight() {
         return this.windowHeight;
     }
 
-
+    /**
+     * Draws the outlines of each box to allow for easier debugging
+     * @param g Graphics from render
+     */
     public void drawOutlineToDebug(Graphics g) {
-
         g.drawRect(this.portraitX, this.portraitY, this.portraitSize, this.portraitSize);
 
-        for (InventoryBoxUI box : this.boxes) {
+        for (InventoryBoxGeneric box : this.boxes) {
             g.drawRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
         }
 
