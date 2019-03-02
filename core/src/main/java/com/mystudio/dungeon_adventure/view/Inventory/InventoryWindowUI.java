@@ -79,6 +79,12 @@ public class InventoryWindowUI {
     private static final int L_HAND = 17;
     private static final int R_HAND = 18;
 
+    private int spriteDraggedID = -1;
+    private int spriteDraggedOffsetX;
+    private int spriteDraggedOffsetY;
+    private int spriteDraggedX;
+    private int spriteDraggedY;
+
     public InventoryWindowUI(int screenWidth, int screenHeight, int boxSize, int portraitSize) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
@@ -98,6 +104,99 @@ public class InventoryWindowUI {
 
     public void setSpritesFromModel(PlayerBasicClass player) {
         //player.inventory;
+    }
+
+    public void spritePickedUp(int boxID, int x, int y) {
+        this.spriteDraggedID = boxID;
+        this.spriteDraggedX = x;
+        this.spriteDraggedY = y;
+
+        for (int i = 0; i < this.numberOfBoxes; i++) {
+            if (boxID == i) {
+                this.spriteDraggedOffsetX = x - this.boxes.get(i).getX();
+                this.spriteDraggedOffsetY = y - this.boxes.get(i).getY();
+            }
+        }
+
+        switch (boxID) {
+            case HEAD:
+                this.spriteDraggedOffsetX = x - this.head.getX();
+                this.spriteDraggedOffsetY = y - this.head.getY();
+                break;
+            case TORSO:
+                this.spriteDraggedOffsetX = x - this.torso.getX();
+                this.spriteDraggedOffsetY = y - this.torso.getY();
+                break;
+            case LEGS:
+                this.spriteDraggedOffsetX = x - this.legs.getX();
+                this.spriteDraggedOffsetY = y - this.legs.getY();
+                break;
+            case FEET:
+                this.spriteDraggedOffsetX = x - this.feet.getX();
+                this.spriteDraggedOffsetY = y - this.feet.getY();
+                break;
+            case L_HAND:
+                this.spriteDraggedOffsetX = x - this.leftHand.getX();
+                this.spriteDraggedOffsetY = y - this.leftHand.getY();
+                break;
+            case R_HAND:
+                this.spriteDraggedOffsetX = x - this.head.getX();
+                this.spriteDraggedOffsetY = y - this.head.getY();
+                break;
+        }
+    }
+
+    public boolean spriteDragged(int x, int y) {
+        if (this.spriteDraggedID != -1) {
+            this.spriteDraggedX = x;
+            this.spriteDraggedY = y;
+            return true;
+        }
+        return false;
+    }
+
+    public void spriteReleasedOutsideBox() {
+        // reset the sprite's coords to original box
+        int boxID = this.spriteDraggedID;
+
+        for (int i = 0; i < this.numberOfBoxes; i++) {
+            if (boxID == i) {
+                this.spriteDraggedX = this.boxes.get(i).getX();
+                this.spriteDraggedY = this.boxes.get(i).getY();
+                this.spriteDraggedOffsetX += this.boxes.get(i).getX();
+                this.spriteDraggedOffsetY += this.boxes.get(i).getX();
+            }
+        }
+
+        switch (boxID) {
+            case HEAD:
+                this.spriteDraggedX = this.head.getX();
+                this.spriteDraggedY = this.head.getY();
+                break;
+            case TORSO:
+                this.spriteDraggedX = this.torso.getX();
+                this.spriteDraggedY = this.torso.getY();
+                break;
+            case LEGS:
+                this.spriteDraggedX = this.legs.getX();
+                this.spriteDraggedY = this.legs.getY();
+                break;
+            case FEET:
+                this.spriteDraggedX = this.feet.getX();
+                this.spriteDraggedY = this.feet.getY();
+                break;
+            case L_HAND:
+                this.spriteDraggedX = this.leftHand.getX();
+                this.spriteDraggedY = this.leftHand.getY();
+                break;
+            case R_HAND:
+                this.spriteDraggedX = this.head.getX();
+                this.spriteDraggedY = this.head.getY();
+                break;
+        }
+
+
+        this.spriteDraggedID = -1;
     }
 
     public boolean setBoxSprite(int boxID, int itemID, String spritePath) {
@@ -134,31 +233,103 @@ public class InventoryWindowUI {
     }
 
     public void drawInventorySprites(Graphics g) {
-        for (InventoryBoxUI box : this.boxes) {
+
+        for (int i = 0; i < this.numberOfBoxes; i++) {
+            InventoryBoxUI box = this.boxes.get(i);
+
             // for every box that has an item
             if (box.hasItem()) {
-                g.drawSprite(box.getSprite(), box.getX(), box.getY());
+                // check if this box's sprite is being dragged
+                if (this.spriteDraggedID == i) {
+                    // use the dragged coords instead
+                    System.out.println("offset x: " + this.spriteDraggedOffsetX + " y: " + this.spriteDraggedOffsetY);
+                    g.drawSprite(box.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                            this.spriteDraggedY - this.spriteDraggedOffsetY);
+                }
+                else {
+                    g.drawSprite(box.getSprite(), box.getX(), box.getY());
+                }
             }
         }
 
         // draw body parts if they have items
         if (this.head.hasItem()) {
-            g.drawSprite(this.head.getSprite(), this.head.getX(), this.head.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == HEAD) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.head.getX();
+                int yDiff = this.spriteDraggedY - this.head.getY();
+                g.drawSprite(this.head.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.head.getSprite(), this.head.getX(), this.head.getY());
+            }
         }
         if (this.torso.hasItem()) {
-            g.drawSprite(this.torso.getSprite(), this.torso.getX(), this.torso.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == TORSO) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.torso.getX();
+                int yDiff = this.spriteDraggedY - this.torso.getY();
+                g.drawSprite(this.torso.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.torso.getSprite(), this.torso.getX(), this.torso.getY());
+            }
         }
         if (this.legs.hasItem()) {
-            g.drawSprite(this.legs.getSprite(), this.legs.getX(), this.legs.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == LEGS) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.legs.getX();
+                int yDiff = this.spriteDraggedY - this.legs.getY();
+                g.drawSprite(this.legs.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.legs.getSprite(), this.legs.getX(), this.legs.getY());
+            }
         }
         if (this.feet.hasItem()) {
-            g.drawSprite(this.feet.getSprite(), this.feet.getX(), this.feet.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == FEET) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.feet.getX();
+                int yDiff = this.spriteDraggedY - this.feet.getY();
+                g.drawSprite(this.feet.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.feet.getSprite(), this.feet.getX(), this.feet.getY());
+            }
         }
         if (this.leftHand.hasItem()) {
-            g.drawSprite(this.leftHand.getSprite(), this.leftHand.getX(), this.leftHand.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == L_HAND) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.leftHand.getX();
+                int yDiff = this.spriteDraggedY - this.leftHand.getY();
+                g.drawSprite(this.leftHand.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.leftHand.getSprite(), this.leftHand.getX(), this.leftHand.getY());
+            }
         }
         if (this.rightHand.hasItem()) {
-            g.drawSprite(this.rightHand.getSprite(), this.rightHand.getX(), this.rightHand.getY());
+            // check if this box's sprite is being dragged
+            if (this.spriteDraggedID == R_HAND) {
+                // use the dragged coords instead
+                int xDiff = this.spriteDraggedX - this.rightHand.getX();
+                int yDiff = this.spriteDraggedY - this.rightHand.getY();
+                g.drawSprite(this.rightHand.getSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
+                        this.spriteDraggedY - this.spriteDraggedOffsetY);
+            }
+            else {
+                g.drawSprite(this.rightHand.getSprite(), this.rightHand.getX(), this.rightHand.getY());
+            }
         }
     }
 

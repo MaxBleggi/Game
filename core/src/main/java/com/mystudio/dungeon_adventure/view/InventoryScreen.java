@@ -120,18 +120,25 @@ public class InventoryScreen extends BasicGameScreen {
                 if (tmp != -1) {
                     this.boxBeingDraggedFrom = tmp;
                     this.isDraggedFromBox = true;
+                    this.window.spritePickedUp(tmp, x, y);
                 }
             }
         }
         else {
+            // sprite released
             this.mousePressFlag = false;
             this.isDraggedFromBox = false;
+            this.boxBeingDraggedFrom = -1;
+            this.window.spriteReleasedOutsideBox();
         }
 
         // check for user drags
         if (this.isDraggedFromBox && InputHandler.isLeftMouseDragged) {
             int x = InputHandler.mouseDraggedX;
             int y = InputHandler.mouseDraggedY;
+
+            // update the sprite's position if it's dragged
+            this.window.spriteDragged(x, y);
 
             System.out.println("dragged at x: " + x + " y:" + y);
         }
