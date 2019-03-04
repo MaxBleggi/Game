@@ -25,6 +25,7 @@ public class InventoryWindowUI {
     private static final int FEET = 16;
     private static final int L_HAND = 17;
     private static final int R_HAND = 18;
+    public static final int NO_BOX = -1;
     /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
     // screen is the game screen (window of the application)
@@ -66,7 +67,7 @@ public class InventoryWindowUI {
     /* - - - - - - - - - - - - - - - - - - - - - */
 
     // used to calculate sprite dragging via the mouse
-    private int spriteDraggedID = -1;
+    private int spriteDraggedID = NO_BOX;
     private int spriteDraggedOffsetX;
     private int spriteDraggedOffsetY;
     private int spriteDraggedX;
@@ -147,7 +148,7 @@ public class InventoryWindowUI {
      * @return true if a sprite is being dragged, false otherwise
      */
     public boolean dragSprite(int x, int y) {
-        if (this.spriteDraggedID != -1) {
+        if (this.spriteDraggedID != NO_BOX) {
             this.spriteDraggedX = x;
             this.spriteDraggedY = y;
             return true;
@@ -199,17 +200,161 @@ public class InventoryWindowUI {
         }
 
 
-        this.spriteDraggedID = -1;
+        this.spriteDraggedID = NO_BOX;
     }
 
     // TODO
-    public void spriteReleasedInsideBox(int boxID) {
-        // reset the sprite's coords to new box
+    public boolean spriteReleasedInsideBox(int boxID, int x, int y) {
+        // reset the sprite's coords to the new box
 
-        // remove sprite from old box
+        // = = = ensure new box doesn't already have an item assigned = = =
+        boolean isBoxAlreadyTaken = false;
+
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+            if (boxID == i && this.boxes.get(i).hasItem()) {
+                isBoxAlreadyTaken = true;
+            }
+        }
+
+        /* if old box hasn't been found yet */
+        if (!isBoxAlreadyTaken) {
+            switch (boxID) {
+                case HEAD:
+                    if (this.head.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+                case TORSO:
+                    if (this.torso.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+                case LEGS:
+                    if (this.legs.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+                case FEET:
+                    if (this.feet.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+                case L_HAND:
+                    if (this.leftHand.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+                case R_HAND:
+                    if (this.rightHand.hasItem()) {
+                        isBoxAlreadyTaken = true;
+                    }
+                    break;
+            }
+        }
+
+        // if new box already has an item, it can't be assigned a new one
+        if (isBoxAlreadyTaken) {
+            return false;
+        }
+        /* = = = = = = = = = = = = = = = = = = = */
 
 
-        // assign sprite to new box
+        /* = = = remove item from old box = = = */
+        int oldItemID = NO_BOX;
+        Sprite oldItemSprite = null;
+        boolean isOldBoxFound = false;
+
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+            if (this.spriteDraggedID == i) {
+                // remove item from the old box
+                oldItemSprite = this.boxes.get(i).getItemSprite();
+                oldItemID = this.boxes.get(i).removeItemIfNotEmpty();
+                isOldBoxFound = true;
+            }
+        }
+
+        // if old box hasn't been found yet
+        if (!isOldBoxFound) {
+            switch (this.spriteDraggedID) {
+                case HEAD:
+                    oldItemSprite = this.head.getItemSprite();
+                    oldItemID = this.head.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+                case TORSO:
+                    oldItemSprite = this.torso.getItemSprite();
+                    oldItemID = this.torso.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+                case LEGS:
+                    oldItemSprite = this.legs.getItemSprite();
+                    oldItemID = this.legs.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+                case FEET:
+                    oldItemSprite = this.legs.getItemSprite();
+                    oldItemID = this.legs.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+                case L_HAND:
+                    oldItemSprite = this.leftHand.getItemSprite();
+                    oldItemID = this.leftHand.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+                case R_HAND:
+                    oldItemSprite = this.rightHand.getItemSprite();
+                    oldItemID = this.rightHand.removeItemIfNotEmpty();
+                    isOldBoxFound = true;
+                    break;
+            }
+        }
+
+        // if old box wasn't box, can't place item in new box
+        if (!isOldBoxFound) {
+            return false;
+        }
+        /* ====================================== */
+
+
+        /* = = = assign item to new box = = = */
+        boolean itemSuccessfullyPlaced = true;
+
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+            if (boxID == i) {
+                // add item to new box
+                itemSuccessfullyPlaced = this.boxes.get(i).placeItemIfEmpty(oldItemID, oldItemSprite);
+            }
+        }
+
+        // if old box hasn't been found yet
+        switch (boxID) {
+            case HEAD:
+                itemSuccessfullyPlaced = this.head.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+            case TORSO:
+                itemSuccessfullyPlaced = this.torso.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+            case LEGS:
+                itemSuccessfullyPlaced = this.legs.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+            case FEET:
+                itemSuccessfullyPlaced = this.feet.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+            case L_HAND:
+                itemSuccessfullyPlaced = this.leftHand.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+            case R_HAND:
+                itemSuccessfullyPlaced = this.rightHand.placeItemIfEmpty(oldItemID, oldItemSprite);
+                break;
+        }
+
+        // if item wasn't placed for some reason
+        if (!itemSuccessfullyPlaced) {
+            return false;
+        }
+        /* ====================================== */
+
+        return false;
 
     }
 
@@ -274,6 +419,7 @@ public class InventoryWindowUI {
 
             // for every box that has an item
             if (box.hasItem()) {
+                System.out.println("HHHHHAASSSSS ITEEEMMMMMM");
                 // check if this box's sprite is being dragged
                 if (this.spriteDraggedID == i) {
                     // use the dragged coords instead
@@ -448,16 +594,16 @@ public class InventoryWindowUI {
      */
     public int checkForPress(int x, int y) {
 
-        int returnID = -1;
+        int returnID = NO_BOX;
 
         // return false if it's not even inside the window
         if (x < this.portraitX || x > this.portraitX + this.windowWidth) {
             System.out.println("out of window width");
-            return -1;
+            return NO_BOX;
         }
         else if (y < this.portraitY || y > this.portraitY + this.windowHeight) {
             System.out.println("out of window height");
-            return -1;
+            return NO_BOX;
         }
 
         // the only clickable areas are on the bottom section

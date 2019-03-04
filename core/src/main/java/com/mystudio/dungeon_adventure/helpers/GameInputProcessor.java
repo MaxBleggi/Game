@@ -40,15 +40,22 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp (int x, int y, int pointer, int button) {
-        if (button == Input.Buttons.LEFT) {
-            InputHandler.isLeftMousePressedDown = false;
 
-            InputHandler.isLeftMouseDragged = false;
-            InputHandler.mouseDraggedX = -1;
-            InputHandler.mouseDraggedY = -1;
-        }
-        else if (button == Input.Buttons.RIGHT) {
-            InputHandler.isRightMousePressedDown = false;
+        // only count touch ups if it is preceded by a touch down
+        if (InputHandler.isLeftMousePressedDown) {
+
+            if (button == Input.Buttons.LEFT) {
+                InputHandler.isLeftMousePressedDown = false;
+                InputHandler.mouseReleasedAtX = x;
+                InputHandler.mouseReleasedAtY = y;
+
+                // cancel drag
+                InputHandler.isLeftMouseDragged = false;
+                InputHandler.mouseDraggedX = -1;
+                InputHandler.mouseDraggedY = -1;
+            } else if (button == Input.Buttons.RIGHT) {
+                InputHandler.isRightMousePressedDown = false;
+            }
         }
         return true;
     }

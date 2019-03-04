@@ -5,6 +5,8 @@ public class InputHandler {
     public static boolean isRightMousePressedDown;
     public static int mousePressedAtX;
     public static int mousePressedAtY;
+    public static int mouseReleasedAtX;
+    public static int mouseReleasedAtY;
 
     public static boolean isLeftMouseDragged;
     public static int mouseDraggedX;

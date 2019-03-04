@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.mystudio.dungeon_adventure.helpers.*;
 import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
+import com.mystudio.dungeon_adventure.view.Inventory.InventoryBoxHands;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -114,24 +115,38 @@ public class InventoryScreen extends BasicGameScreen {
                 int x = InputHandler.mousePressedAtX;
                 int y = InputHandler.mousePressedAtY;
 
-                int tmp = this.window.checkForPress(x, y);
+                int boxID = this.window.checkForPress(x, y);
 
-                if (tmp != -1) {
-                    this.boxBeingDraggedFrom = tmp;
+                if (boxID != InventoryWindowUI.NO_BOX) {
+                    this.boxBeingDraggedFrom = boxID;
                     this.isDraggedFromBox = true;
-                    this.window.pickupSprite(tmp, x, y);
+                    this.window.pickupSprite(boxID, x, y);
                 }
             }
         }
         // user releases left mouse
         else {
             // find out where sprite is released
+            int x = InputHandler.mouseReleasedAtX;
+            int y = InputHandler.mouseReleasedAtY;
+
+            int boxID = this.window.checkForPress(x, y);
+
+            if (boxID != InventoryWindowUI.NO_BOX) {
+
+                // if placement wasn't successful
+                if ( !this.window.spriteReleasedInsideBox(boxID, x, y) ) {
+                    this.window.releaseSpriteOutsideBox();
+                }
+            }
+            else {
+                this.window.releaseSpriteOutsideBox();
+            }
 
             // release sprite
             this.mousePressFlag = false;
             this.isDraggedFromBox = false;
-            this.boxBeingDraggedFrom = -1;
-            this.window.releaseSpriteOutsideBox();
+            this.boxBeingDraggedFrom = InventoryWindowUI.NO_BOX;
         }
 
         // check for user dragging sprite

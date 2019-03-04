@@ -25,7 +25,7 @@ public class InventoryBoxGeneric {
         this.width = width;
         this.height = height;
         this.sprite = null;
-        this.itemID = -1;
+        this.itemID = InventoryWindowUI.NO_BOX;
     }
 
     public InventoryBoxGeneric() {
@@ -37,28 +37,47 @@ public class InventoryBoxGeneric {
 
     /**
      * removes item from slot. Returns that item if it existed
-     * @return itemID if avaiable, -1 otherwise
+     * @return itemID if available, NO_BOX otherwise
      */
     public int removeItemIfNotEmpty() {
         if (hasItem()) {
             this.sprite = null;
 
             int tmp = this.itemID;
-            this.itemID = -1;
+            this.itemID = InventoryWindowUI.NO_BOX;
 
             return tmp;
         }
-        return -1;
+        return InventoryWindowUI.NO_BOX;
     }
 
     /**
      * Attempts to place item into slot. Will return false if slot is already used.
-     * @return success of placement
+     * @param itemID ID of item added
+     * @param spritePath the file path of sprite resource
+     * @return true if empty, false if not empty
      */
     public boolean placeItemIfEmpty(int itemID, String spritePath) {
-        if (this.sprite == null) {
+        if (!hasItem()) {
             this.itemID = itemID;
             this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+            this.sprite.setSize(this.width, this.height);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Attempts to place item into slot. Will return false if slot is already used.
+     * @param itemID ID of item added
+     * @param sprite sprite of the item
+     * @return true if empty, false is not empty
+     */
+    public boolean placeItemIfEmpty(int itemID, Sprite sprite) {
+        if (!hasItem() || sprite == null) {
+            this.itemID = itemID;
+            this.sprite = sprite;
             this.sprite.setSize(this.width, this.height);
             return true;
         }
