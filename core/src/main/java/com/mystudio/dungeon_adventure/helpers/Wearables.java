@@ -1,6 +1,7 @@
 package com.mystudio.dungeon_adventure.helpers;
 
 public enum Wearables {
+    NONE(-1),
     HEAD(1),
     TORSO(2),
     ARMS(3),
