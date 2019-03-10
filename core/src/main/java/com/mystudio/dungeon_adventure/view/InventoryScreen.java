@@ -3,10 +3,11 @@ package com.mystudio.dungeon_adventure.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemBase;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemWearable;
 import com.mystudio.dungeon_adventure.helpers.*;
 import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
-import com.mystudio.dungeon_adventure.view.Inventory.InventoryBoxHands;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -35,7 +36,8 @@ public class InventoryScreen extends BasicGameScreen {
     private boolean isDraggedFromBox = false;
     private int boxBeingDraggedFrom;
 
-    private boolean mousePressFlag = false;
+    private boolean mousePressedFlag = false;
+    private boolean mouseReleasedFlag = false;
 
 
     /**
@@ -45,8 +47,6 @@ public class InventoryScreen extends BasicGameScreen {
      */
     @Override
     public void initialise(GameContainer gc) {
-        // get player info
-        this.player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
 
 
         // create 4 x 4 box of rectangles
@@ -75,12 +75,33 @@ public class InventoryScreen extends BasicGameScreen {
     public void preTransitionIn(Transition transitionIn) {
         this.isScreenVisible = true;
 
+        // get player info
+        this.player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
+
+
+
         ItemActionable test = new ItemActionable(1, "sword", "desc", Rarity.COMMON,
                 Actionables.SWORD, "inventory/items/sword.png");
 
-        boolean success = this.window.setBoxSprite(0, test.getItemID(), test.getSpritePath());
+        boolean success = this.window.placeItemInBox(0, test.getItemID(),ItemTypes.Actionable,
+                Wearables.NONE, test.getSpritePath());
 
-        System.out.println("success of adding sprite: " + success);
+
+
+        ItemBase potion = new ItemBase(2, "potion", "desc", Rarity.COMMON,
+                "inventory/items/potion.png");
+
+        this.window.placeItemInBox(3, potion.getItemID(),ItemTypes.Generic,
+                Wearables.NONE, potion.getSpritePath());
+
+        ItemBase helmet = new ItemWearable(3, "potion", "desc", Rarity.COMMON,
+                Wearables.HEAD, "inventory/items/helmet.jpg");
+
+        this.window.placeItemInBox(6, helmet.getItemID(),ItemTypes.Wearable,
+                Wearables.HEAD, helmet.getSpritePath());
+
+
+
 
         super.preTransitionIn(transitionIn);
     }
@@ -110,8 +131,10 @@ public class InventoryScreen extends BasicGameScreen {
         if (InputHandler.isLeftMousePressedDown) {
 
             // make sure clicks are only counted once per button press
-            if (!this.mousePressFlag) {
-                this.mousePressFlag = true;
+            if (!this.mousePressedFlag) {
+                this.mousePressedFlag = true;
+                this.mouseReleasedFlag = false;
+
                 int x = InputHandler.mousePressedAtX;
                 int y = InputHandler.mousePressedAtY;
 
@@ -124,27 +147,53 @@ public class InventoryScreen extends BasicGameScreen {
                 }
             }
         }
-        // user releases left mouse
-        else {
+        // if user releases left mouse
+        // only check for the first instance after release, not continuously
+        else if (!this.mouseReleasedFlag) {
+
             // find out where sprite is released
             int x = InputHandler.mouseReleasedAtX;
             int y = InputHandler.mouseReleasedAtY;
 
             int boxID = this.window.checkForPress(x, y);
 
+            // if this ID is from a box
             if (boxID != InventoryWindowUI.NO_BOX) {
 
-                // if placement wasn't successful
-                if ( !this.window.spriteReleasedInsideBox(boxID, x, y) ) {
-                    this.window.releaseSpriteOutsideBox();
+                // attempt to place item inside box
+                boolean placementSuccess = this.window.spriteReleasedInsideBox(boxID, x, y);
+
+                // if placement succeeded
+                if (placementSuccess) {
+                    // TODO add item to player inventory
+                    // get the item ID
+                    int itemID = this.window.getItemFromBox(boxID);
+
+                    // save the item to the player's inventory, based on what type it is
+                    if (boxID < InventoryWindowUI.HEAD) {
+                        // any item < HEAD is in regular inventory
+                    }
+                    else {
+                        // check which body part
+                    }
                 }
+                else {
+                    // if it failed, place item back in original box/
+                    // TODO make new box outside of window to allow players to drop items
+                    this.window.spriteReleasedOutsideBox();
+                }
+
+                System.out.println("placement inside was: " + placementSuccess);
             }
+            // this ID is not from a box
             else {
-                this.window.releaseSpriteOutsideBox();
+                System.out.println("item released outside box");
+                this.window.spriteReleasedOutsideBox();
             }
 
             // release sprite
-            this.mousePressFlag = false;
+            this.mousePressedFlag = false;
+            this.mouseReleasedFlag = true;
             this.isDraggedFromBox = false;
             this.boxBeingDraggedFrom = InventoryWindowUI.NO_BOX;
         }

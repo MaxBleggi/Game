@@ -2,6 +2,9 @@ package com.mystudio.dungeon_adventure.view.Inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemWearable;
+import com.mystudio.dungeon_adventure.helpers.ItemTypes;
+import com.mystudio.dungeon_adventure.helpers.Wearables;
 import org.mini2Dx.core.graphics.Sprite;
 
 public class InventoryBoxGeneric {
@@ -9,6 +12,9 @@ public class InventoryBoxGeneric {
     protected int y;
     protected int width;
     protected int height;
+
+    protected ItemTypes itemType;
+    private Wearables bodyPart;
 
     // the sprite for each object
     protected Sprite sprite;
@@ -32,16 +38,33 @@ public class InventoryBoxGeneric {
 
     }
 
+    public Wearables getBodyPart() {
+        return bodyPart;
+    }
+
+    public ItemTypes getItemType() {
+        return this.itemType;
+    }
+
+    /**
+     * Retrieves the ID of the item from this box
+     * @return Unique item ID
+     */
+    public int getItem() {
+        return this.itemID;
+    }
+
 
     /* - - -    Sprite manipulation methods    - - - */
 
     /**
-     * removes item from slot. Returns that item if it existed
+     * Removes item from slot. Returns that item if it existed
      * @return itemID if available, NO_BOX otherwise
      */
     public int removeItemIfNotEmpty() {
         if (hasItem()) {
             this.sprite = null;
+            this.itemType = null;
 
             int tmp = this.itemID;
             this.itemID = InventoryWindowUI.NO_BOX;
@@ -57,11 +80,15 @@ public class InventoryBoxGeneric {
      * @param spritePath the file path of sprite resource
      * @return true if empty, false if not empty
      */
-    public boolean placeItemIfEmpty(int itemID, String spritePath) {
-        if (!hasItem()) {
+    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
+        if (!hasItem() && itemType != null && bodyPart != null) {
             this.itemID = itemID;
+            this.itemType = itemType;
+            this.bodyPart = bodyPart;
+
             this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
             this.sprite.setSize(this.width, this.height);
+
             return true;
         }
 
@@ -74,11 +101,16 @@ public class InventoryBoxGeneric {
      * @param sprite sprite of the item
      * @return true if empty, false is not empty
      */
-    public boolean placeItemIfEmpty(int itemID, Sprite sprite) {
-        if (!hasItem() || sprite == null) {
+    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
+
+        if (!hasItem() && sprite != null && itemType != null && bodyPart != null) {
             this.itemID = itemID;
+            this.itemType = itemType;
+            this.bodyPart = bodyPart;
+
             this.sprite = sprite;
             this.sprite.setSize(this.width, this.height);
+
             return true;
         }
 

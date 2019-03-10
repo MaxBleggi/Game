@@ -1,5 +1,8 @@
 package com.mystudio.dungeon_adventure.view.Inventory;
 
+import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemWearable;
+import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import org.mini2Dx.core.graphics.Graphics;
@@ -18,14 +21,14 @@ public class InventoryWindowUI {
     private final static int numberOfBoxRows = 4;
     private final static int numberOfBoxColumns = 3;
 
-    private static final int[] INVENTORY_BOXES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-    private static final int HEAD = 13;
-    private static final int TORSO = 14;
-    private static final int LEGS = 15;
-    private static final int FEET = 16;
-    private static final int L_HAND = 17;
-    private static final int R_HAND = 18;
     public static final int NO_BOX = -1;
+    public static final int[] INVENTORY_BOXES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    public static final int HEAD = 12;
+    public static final int TORSO = 13;
+    public static final int LEGS = 14;
+    public static final int FEET = 15;
+    public static final int L_HAND = 16;
+    public static final int R_HAND = 17;
     /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
     // screen is the game screen (window of the application)
@@ -135,8 +138,8 @@ public class InventoryWindowUI {
                 this.spriteDraggedOffsetY = y - this.leftHand.getY();
                 break;
             case R_HAND:
-                this.spriteDraggedOffsetX = x - this.head.getX();
-                this.spriteDraggedOffsetY = y - this.head.getY();
+                this.spriteDraggedOffsetX = x - this.rightHand.getX();
+                this.spriteDraggedOffsetY = y - this.rightHand.getY();
                 break;
         }
     }
@@ -159,7 +162,7 @@ public class InventoryWindowUI {
     /**
      * Resets the drag coords if the sprite was released outside the bounds of a box
      */
-    public void releaseSpriteOutsideBox() {
+    public void spriteReleasedOutsideBox() {
         // reset the sprite's coords to original box
         int boxID = this.spriteDraggedID;
 
@@ -254,22 +257,30 @@ public class InventoryWindowUI {
 
         // if new box already has an item, it can't be assigned a new one
         if (isBoxAlreadyTaken) {
+            System.out.println("box already taken");
             return false;
         }
         /* = = = = = = = = = = = = = = = = = = = */
 
 
-        /* = = = remove item from old box = = = */
+        /* = = = get item from old box = = = */
         int oldItemID = NO_BOX;
+        ItemTypes oldItemType = null;
+        Wearables oldBodyPart = null;
+
         Sprite oldItemSprite = null;
         boolean isOldBoxFound = false;
 
         for (int i = 0; i < INVENTORY_BOXES.length; i++) {
             if (this.spriteDraggedID == i) {
                 // remove item from the old box
+                oldItemType = this.boxes.get(i).getItemType();
+                oldBodyPart = this.boxes.get(i).getBodyPart();
                 oldItemSprite = this.boxes.get(i).getItemSprite();
-                oldItemID = this.boxes.get(i).removeItemIfNotEmpty();
+
+                oldItemID = this.boxes.get(i).getItem();
                 isOldBoxFound = true;
+
             }
         }
 
@@ -277,33 +288,57 @@ public class InventoryWindowUI {
         if (!isOldBoxFound) {
             switch (this.spriteDraggedID) {
                 case HEAD:
+                    oldItemType = ItemTypes.Wearable;
+                    oldBodyPart = Wearables.HEAD;
+
                     oldItemSprite = this.head.getItemSprite();
-                    oldItemID = this.head.removeItemIfNotEmpty();
+
+                    oldItemID = this.head.getItem();
                     isOldBoxFound = true;
                     break;
                 case TORSO:
+                    oldItemType = ItemTypes.Wearable;
+                    oldBodyPart = Wearables.TORSO;
+
                     oldItemSprite = this.torso.getItemSprite();
-                    oldItemID = this.torso.removeItemIfNotEmpty();
+
+                    oldItemID = this.torso.getItem();
                     isOldBoxFound = true;
                     break;
                 case LEGS:
+                    oldItemType = ItemTypes.Wearable;
+                    oldBodyPart = Wearables.LEGS;
+
                     oldItemSprite = this.legs.getItemSprite();
-                    oldItemID = this.legs.removeItemIfNotEmpty();
+
+                    oldItemID = this.legs.getItem();
                     isOldBoxFound = true;
                     break;
                 case FEET:
-                    oldItemSprite = this.legs.getItemSprite();
-                    oldItemID = this.legs.removeItemIfNotEmpty();
+                    oldItemType = ItemTypes.Wearable;
+                    oldBodyPart = Wearables.FEET;
+
+                    oldItemSprite = this.feet.getItemSprite();
+
+                    oldItemID = this.feet.getItem();
                     isOldBoxFound = true;
                     break;
                 case L_HAND:
+                    oldItemType = ItemTypes.Actionable;
+                    oldBodyPart = Wearables.NONE;
+
                     oldItemSprite = this.leftHand.getItemSprite();
-                    oldItemID = this.leftHand.removeItemIfNotEmpty();
+
+                    oldItemID = this.leftHand.getItem();
                     isOldBoxFound = true;
                     break;
                 case R_HAND:
+                    oldItemType = ItemTypes.Actionable;
+                    oldBodyPart = Wearables.NONE;
+
                     oldItemSprite = this.rightHand.getItemSprite();
-                    oldItemID = this.rightHand.removeItemIfNotEmpty();
+
+                    oldItemID = this.rightHand.getItem();
                     isOldBoxFound = true;
                     break;
             }
@@ -311,51 +346,78 @@ public class InventoryWindowUI {
 
         // if old box wasn't box, can't place item in new box
         if (!isOldBoxFound) {
+            System.out.println("old box not found");
             return false;
         }
         /* ====================================== */
 
 
         /* = = = assign item to new box = = = */
-        boolean itemSuccessfullyPlaced = true;
+        boolean itemSuccessfullyPlaced = false;
 
         for (int i = 0; i < INVENTORY_BOXES.length; i++) {
             if (boxID == i) {
                 // add item to new box
-                itemSuccessfullyPlaced = this.boxes.get(i).placeItemIfEmpty(oldItemID, oldItemSprite);
+                System.out.println("it's a box");
+                itemSuccessfullyPlaced = placeItemInBox(boxID, oldItemID, oldItemType, oldBodyPart, oldItemSprite);
             }
         }
 
-        // if old box hasn't been found yet
-        switch (boxID) {
-            case HEAD:
-                itemSuccessfullyPlaced = this.head.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
-            case TORSO:
-                itemSuccessfullyPlaced = this.torso.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
-            case LEGS:
-                itemSuccessfullyPlaced = this.legs.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
-            case FEET:
-                itemSuccessfullyPlaced = this.feet.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
-            case L_HAND:
-                itemSuccessfullyPlaced = this.leftHand.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
-            case R_HAND:
-                itemSuccessfullyPlaced = this.rightHand.placeItemIfEmpty(oldItemID, oldItemSprite);
-                break;
+        // if item hasn't been placed, try a body part
+        // only if the old item is wearable
+        if (!itemSuccessfullyPlaced && oldItemType == ItemTypes.Wearable) {
+
+            System.out.println("it's wearable: " + oldItemID);
+            itemSuccessfullyPlaced = placeItemOnBody(boxID, oldItemID, oldBodyPart, oldItemSprite);
         }
 
-        // if item wasn't placed for some reason
-        if (!itemSuccessfullyPlaced) {
+        // if item still hasn't been placed, try hands
+        // only if old item is Actionable
+        if (!itemSuccessfullyPlaced && oldItemType == ItemTypes.Actionable) {
+
+            System.out.println("it's actionable: " + oldItemType);
+            itemSuccessfullyPlaced = placeItemInHand(boxID, oldItemID, oldItemSprite);
+        }
+
+
+        // if item was removed successfully
+        if (itemSuccessfullyPlaced) {
+
+            // remove item this item from former box
+            for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+                if (this.spriteDraggedID == i) {
+                    this.boxes.get(i).removeItemIfNotEmpty();
+                }
+            }
+            switch (this.spriteDraggedID) {
+                case HEAD:
+                    this.head.removeItemIfNotEmpty();
+                    break;
+                case TORSO:
+                    this.torso.removeItemIfNotEmpty();
+                    break;
+                case LEGS:
+                    this.legs.removeItemIfNotEmpty();
+                    break;
+                case FEET:
+                    this.feet.removeItemIfNotEmpty();
+                    break;
+                case L_HAND:
+                    this.leftHand.removeItemIfNotEmpty();
+                    break;
+                case R_HAND:
+                    this.rightHand.removeItemIfNotEmpty();
+                    break;
+            }
+        }
+        else {
+            // if item wasn't placed for some reason, report false
+            System.out.println("could not place item");
             return false;
         }
         /* ====================================== */
 
-        return false;
-
+        return true;
     }
 
     /* - - - - - - - - - - - - - - - - - */
@@ -368,41 +430,99 @@ public class InventoryWindowUI {
     }
 
     /**
-     * Sets the sprite of specified box
+     * Sets the sprite of specified box, does not include body parts
      * @param boxID ID of box for the sprite
      * @param itemID ID of item associated with sprite
      * @param spritePath file path of sprite resource file
      * @return true if successful, false otherwise
      */
-    public boolean setBoxSprite(int boxID, int itemID, String spritePath) {
+    public boolean placeItemInBox(int boxID, int itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
         boolean success = false;
 
         System.out.println(spritePath + " ID:" + boxID);
-        if (boxID >= 0 && boxID <= 11) {
-            success = this.boxes.get(boxID).placeItemIfEmpty(itemID, spritePath);
+        if (boxID > NO_BOX && boxID < HEAD) {
+            success = this.boxes.get(boxID).placeItemIfEmpty(itemID, itemType, bodyPart, spritePath);
         }
-        else if (boxID <= 18){
-            switch (boxID) {
-                case HEAD:
-                    success = this.head.placeItemIfEmpty(itemID, spritePath);
-                    break;
-                case TORSO:
-                    success = this.torso.placeItemIfEmpty(itemID, spritePath);
-                    break;
-                case LEGS:
-                    success = this.legs.placeItemIfEmpty(itemID, spritePath);
-                    break;
-                case FEET:
-                    success = this.feet.placeItemIfEmpty(itemID, spritePath);
-                    break;
-                case L_HAND:
-                    success = this.leftHand.placeItemIfEmpty(itemID, spritePath);
-                    break;
-                case R_HAND:
-                    success = this.rightHand.placeItemIfEmpty(itemID, spritePath);
-                    break;
-            }
-         }
+
+        return success;
+    }
+
+    public boolean placeItemInBox(int boxID, int itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
+        boolean success = false;
+
+        if (boxID > NO_BOX && boxID < HEAD) {
+            success = this.boxes.get(boxID).placeItemIfEmpty(itemID, itemType, bodyPart, sprite);
+        }
+
+        return success;
+    }
+
+    public boolean placeItemInHand(int boxID, int itemID, String spritePath) {
+        boolean success = false;
+
+        if (boxID == L_HAND) {
+            success = this.leftHand.placeItemIfEmpty(itemID, ItemTypes.Actionable, Wearables.NONE, spritePath);
+        }
+        else if (boxID == R_HAND) {
+            success = this.rightHand.placeItemIfEmpty(itemID, ItemTypes.Actionable, Wearables.NONE, spritePath);
+        }
+
+        return success;
+    }
+
+    public boolean placeItemInHand(int boxID, int itemID, Sprite sprite) {
+        boolean success = false;
+
+        if (boxID == L_HAND) {
+            success = this.leftHand.placeItemIfEmpty(itemID, ItemTypes.Actionable, Wearables.NONE, sprite);
+        }
+        else if (boxID == R_HAND) {
+            success = this.rightHand.placeItemIfEmpty(itemID, ItemTypes.Actionable, Wearables.NONE, sprite);
+        }
+
+        return success;
+    }
+
+    public boolean placeItemOnBody(int boxID, int itemID, Wearables bodyPart, String spritePath) {
+
+        boolean success = false;
+
+        switch (boxID) {
+            case HEAD:
+                success = this.head.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, spritePath);
+                break;
+            case TORSO:
+                success = this.torso.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, spritePath);
+                break;
+            case LEGS:
+                success = this.legs.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, spritePath);
+                break;
+            case FEET:
+                success = this.feet.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, spritePath);
+                break;
+        }
+
+        return success;
+    }
+
+    public boolean placeItemOnBody(int boxID, int itemID, Wearables bodyPart, Sprite sprite) {
+
+        boolean success = false;
+
+        switch (boxID) {
+            case HEAD:
+                success = this.head.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, sprite);
+                break;
+            case TORSO:
+                success = this.torso.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, sprite);
+                break;
+            case LEGS:
+                success = this.legs.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, sprite);
+                break;
+            case FEET:
+                success = this.feet.placeItemIfEmpty(itemID, ItemTypes.Wearable, bodyPart, sprite);
+                break;
+        }
 
         return success;
     }
@@ -419,11 +539,9 @@ public class InventoryWindowUI {
 
             // for every box that has an item
             if (box.hasItem()) {
-                System.out.println("HHHHHAASSSSS ITEEEMMMMMM");
                 // check if this box's sprite is being dragged
                 if (this.spriteDraggedID == i) {
                     // use the dragged coords instead
-                    System.out.println("offset x: " + this.spriteDraggedOffsetX + " y: " + this.spriteDraggedOffsetY);
                     g.drawSprite(box.getItemSprite(), this.spriteDraggedX  - this.spriteDraggedOffsetX,
                             this.spriteDraggedY - this.spriteDraggedOffsetY);
                 }
@@ -635,6 +753,46 @@ public class InventoryWindowUI {
     }
 
     /* - - - - - - - - - - - - - - - - - */
+
+    public int getItemFromBox(int boxID) {
+        // find which box this is
+        // return that box's item ID
+
+        for (int i = 0; i < INVENTORY_BOXES.length; i++) {
+            if (boxID == i) {
+               return this.boxes.get(i).getItem();
+            }
+        }
+
+        int returnValue;
+
+        switch (boxID) {
+            case HEAD:
+                returnValue = this.head.getItem();
+                break;
+            case TORSO:
+                returnValue = this.torso.getItem();
+                break;
+            case LEGS:
+                returnValue = this.legs.getItem();
+                break;
+            case FEET:
+                returnValue = this.feet.getItem();
+                break;
+            case L_HAND:
+                returnValue = this.leftHand.getItem();
+                break;
+            case R_HAND:
+                returnValue = this.rightHand.getItem();
+                break;
+                default:
+                    returnValue = NO_BOX;
+                    break;
+        }
+
+        // box ID was not found
+        return returnValue;
+    }
 
 
     /**
