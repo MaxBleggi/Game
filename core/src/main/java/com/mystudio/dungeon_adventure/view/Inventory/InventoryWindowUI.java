@@ -9,6 +9,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class InventoryWindowUI {
 
@@ -264,7 +265,7 @@ public class InventoryWindowUI {
 
 
         /* = = = get item from old box = = = */
-        int oldItemID = NO_BOX;
+        UUID oldItemID = null;
         ItemTypes oldItemType = null;
         Wearables oldBodyPart = null;
 
@@ -429,6 +430,25 @@ public class InventoryWindowUI {
         //player.inventory;
     }
 
+    public void removeAllSprites() {
+        for (InventoryBoxGeneric box : this.boxes) {
+            box.removeItemIfNotEmpty();
+        }
+
+        this.head.removeItemIfNotEmpty();
+        this.torso.removeItemIfNotEmpty();
+        this.legs.removeItemIfNotEmpty();
+        this.feet.removeItemIfNotEmpty();
+        this.leftHand.removeItemIfNotEmpty();
+        this.rightHand.removeItemIfNotEmpty();
+
+        this.spriteDraggedID = NO_BOX;
+        this.spriteDraggedX = 0;
+        this.spriteDraggedY = 0;
+        this.spriteDraggedOffsetX = 0;
+        this.spriteDraggedOffsetY = 0;
+    }
+
     /**
      * Sets the sprite of specified box, does not include body parts
      * @param boxID ID of box for the sprite
@@ -436,18 +456,18 @@ public class InventoryWindowUI {
      * @param spritePath file path of sprite resource file
      * @return true if successful, false otherwise
      */
-    public boolean placeItemInBox(int boxID, int itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
+    public boolean placeItemInBox(int boxID, UUID itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
         boolean success = false;
 
-        System.out.println(spritePath + " ID:" + boxID);
         if (boxID > NO_BOX && boxID < HEAD) {
             success = this.boxes.get(boxID).placeItemIfEmpty(itemID, itemType, bodyPart, spritePath);
+            System.out.println("placement of item in box + " + boxID + "is " + success);
         }
 
         return success;
     }
 
-    public boolean placeItemInBox(int boxID, int itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
+    public boolean placeItemInBox(int boxID, UUID itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
         boolean success = false;
 
         if (boxID > NO_BOX && boxID < HEAD) {
@@ -457,7 +477,7 @@ public class InventoryWindowUI {
         return success;
     }
 
-    public boolean placeItemInHand(int boxID, int itemID, String spritePath) {
+    public boolean placeItemInHand(int boxID, UUID itemID, String spritePath) {
         boolean success = false;
 
         if (boxID == L_HAND) {
@@ -470,7 +490,7 @@ public class InventoryWindowUI {
         return success;
     }
 
-    public boolean placeItemInHand(int boxID, int itemID, Sprite sprite) {
+    public boolean placeItemInHand(int boxID, UUID itemID, Sprite sprite) {
         boolean success = false;
 
         if (boxID == L_HAND) {
@@ -483,7 +503,7 @@ public class InventoryWindowUI {
         return success;
     }
 
-    public boolean placeItemOnBody(int boxID, int itemID, Wearables bodyPart, String spritePath) {
+    public boolean placeItemOnBody(int boxID, UUID itemID, Wearables bodyPart, String spritePath) {
 
         boolean success = false;
 
@@ -505,7 +525,7 @@ public class InventoryWindowUI {
         return success;
     }
 
-    public boolean placeItemOnBody(int boxID, int itemID, Wearables bodyPart, Sprite sprite) {
+    public boolean placeItemOnBody(int boxID, UUID itemID, Wearables bodyPart, Sprite sprite) {
 
         boolean success = false;
 
@@ -754,7 +774,7 @@ public class InventoryWindowUI {
 
     /* - - - - - - - - - - - - - - - - - */
 
-    public int getItemFromBox(int boxID) {
+    public UUID getItemFromBox(int boxID) {
         // find which box this is
         // return that box's item ID
 
@@ -764,7 +784,7 @@ public class InventoryWindowUI {
             }
         }
 
-        int returnValue;
+        UUID returnValue;
 
         switch (boxID) {
             case HEAD:
@@ -786,7 +806,7 @@ public class InventoryWindowUI {
                 returnValue = this.rightHand.getItem();
                 break;
                 default:
-                    returnValue = NO_BOX;
+                    returnValue = null;
                     break;
         }
 

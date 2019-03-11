@@ -6,6 +6,8 @@ import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import org.mini2Dx.core.graphics.Sprite;
 
+import java.util.UUID;
+
 
 public class InventoryBoxBodyPart extends InventoryBoxGeneric {
 
@@ -18,13 +20,13 @@ public class InventoryBoxBodyPart extends InventoryBoxGeneric {
         this.width = width;
         this.height = height;
         this.sprite = null;
-        this.itemID = -1;
+        this.itemID = null;
 
         this.bodyPartType = bodyPartType;
     }
 
     @Override
-    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
+    public boolean placeItemIfEmpty(UUID itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
 
         System.out.println("item: " + bodyPart + " is a " + this.bodyPartType);
         if (!hasItem() && sprite != null) {
@@ -46,7 +48,7 @@ public class InventoryBoxBodyPart extends InventoryBoxGeneric {
     }
 
     @Override
-    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
+    public boolean placeItemIfEmpty(UUID itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
         System.out.println("item: " + bodyPart + " is a " + this.bodyPartType);
 
         if (!hasItem() && sprite != null) {

@@ -3,10 +3,11 @@ package com.mystudio.dungeon_adventure.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.data.Inventory.ItemBase;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemGeneric;
 import com.mystudio.dungeon_adventure.data.Inventory.ItemWearable;
 import com.mystudio.dungeon_adventure.helpers.*;
-import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
 import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import com.mystudio.dungeon_adventure.view.Inventory.InventoryWindowUI;
 import org.mini2Dx.core.game.GameContainer;
@@ -18,6 +19,8 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+
+import java.util.UUID;
 
 public class InventoryScreen extends BasicGameScreen {
 
@@ -78,9 +81,29 @@ public class InventoryScreen extends BasicGameScreen {
         // get player info
         this.player = (PlayerBasicClass) SaveState.loadObject(SaveState.PLAYER_SAVE_STATE);
 
+        UUID[] boxes = this.player.inventory.getInventoryBoxes();
 
+        for (int i = 0; i < boxes.length; i++) {
 
-        ItemActionable test = new ItemActionable(1, "sword", "desc", Rarity.COMMON,
+            // if slot has an item
+            if (boxes[i] != null) {
+
+                // get item
+                ItemBase item = this.player.inventory.getItem(boxes[i]);
+                Wearables type = Wearables.NONE;
+
+                // determine if it's a wearable
+                if (item.getItemType() == ItemTypes.Wearable) {
+                    ItemWearable tmp = item.castIfWearable();
+                    type = tmp.whichBodyPart();
+                }
+
+                this.window.placeItemInBox(i, boxes[i], item.getItemType(), type, item.getSpritePath());
+                System.out.println("placed item in box " + i);
+            }
+        }
+
+       /* ItemActionable test = new ItemActionable(1, "sword", "desc", Rarity.COMMON,
                 Actionables.SWORD, "inventory/items/sword.png");
 
         boolean success = this.window.placeItemInBox(0, test.getItemID(),ItemTypes.Actionable,
@@ -88,17 +111,17 @@ public class InventoryScreen extends BasicGameScreen {
 
 
 
-        ItemBase potion = new ItemBase(2, "potion", "desc", Rarity.COMMON,
+        ItemGeneric potion = new ItemGeneric(2, "potion", "desc", Rarity.COMMON,
                 "inventory/items/potion.png");
 
         this.window.placeItemInBox(3, potion.getItemID(),ItemTypes.Generic,
                 Wearables.NONE, potion.getSpritePath());
 
-        ItemBase helmet = new ItemWearable(3, "potion", "desc", Rarity.COMMON,
+        ItemGeneric helmet = new ItemWearable(3, "potion", "desc", Rarity.COMMON,
                 Wearables.HEAD, "inventory/items/helmet.jpg");
 
         this.window.placeItemInBox(6, helmet.getItemID(),ItemTypes.Wearable,
-                Wearables.HEAD, helmet.getSpritePath());
+                Wearables.HEAD, helmet.getSpritePath());*/
 
 
 
@@ -109,7 +132,17 @@ public class InventoryScreen extends BasicGameScreen {
     @Override
     public void preTransitionOut(Transition transitionOut) {
         this.isScreenVisible = false;
+
         super.preTransitionOut(transitionOut);
+    }
+
+    @Override
+    public void postTransitionOut(Transition transitionOut) {
+
+        // remove sprites from window
+        this.window.removeAllSprites();
+
+        super.postTransitionOut(transitionOut);
     }
 
     /**
@@ -167,7 +200,7 @@ public class InventoryScreen extends BasicGameScreen {
                 if (placementSuccess) {
                     // TODO add item to player inventory
                     // get the item ID
-                    int itemID = this.window.getItemFromBox(boxID);
+                    UUID itemID = this.window.getItemFromBox(boxID);
 
                     // save the item to the player's inventory, based on what type it is
                     if (boxID < InventoryWindowUI.HEAD) {

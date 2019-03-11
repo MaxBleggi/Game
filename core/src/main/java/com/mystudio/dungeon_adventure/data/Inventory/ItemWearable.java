@@ -5,19 +5,21 @@ import com.mystudio.dungeon_adventure.helpers.Rarity;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class ItemWearable extends ItemBase implements Serializable {
 
-    private Wearables bodyPart;
 
-    public ItemWearable(int itemID, String title, String desc, Rarity rarity, Wearables bodyPart, String spritePath) {
-        super.itemID = itemID;
+    public ItemWearable(String title, String desc, Rarity rarity, Wearables bodyPart, String spritePath) {
         super.itemType = ItemTypes.Wearable;
         super.title = title;
         super.description = desc;
         super.rarityLevel = rarity;
         super.spritePath = spritePath;
-        this.bodyPart = bodyPart;
+        super.bodyPart = bodyPart;
+
+        // unique ID for each object
+        super.itemID = UUID.randomUUID();
     }
 
     /**

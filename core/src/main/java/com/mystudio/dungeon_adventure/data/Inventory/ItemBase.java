@@ -1,31 +1,60 @@
 package com.mystudio.dungeon_adventure.data.Inventory;
+
+import com.mystudio.dungeon_adventure.helpers.Actionables;
 import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.helpers.Rarity;
+import com.mystudio.dungeon_adventure.helpers.Wearables;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-public class ItemBase implements Serializable {
-
+public abstract class ItemBase implements Serializable {
     protected Rarity rarityLevel;
     protected String title;
     protected String description;
     protected String spritePath;
 
+    protected Wearables bodyPart;
+    protected Actionables type;
+
     // cannot update after creation
-    protected int itemID;
+    protected UUID itemID;
     protected ItemTypes itemType;
 
-    public ItemBase (int itemID, String title, String desc, Rarity rarity, String spritePath) {
-        this.itemID = itemID;
-        this.itemType = ItemTypes.Generic;
-        this.title = title;
-        this.description = desc;
-        this.rarityLevel = rarity;
-        this.spritePath = spritePath;
+
+    public ItemBase() {
     }
 
-    public ItemBase () {
+
+    public ItemGeneric castIfGeneric() {
+
+        if (this.itemType == ItemTypes.Generic) {
+            return (ItemGeneric)this;
+        }
+        else {
+            return null;
+        }
     }
+
+    public ItemWearable castIfWearable() {
+        if (this.itemType == ItemTypes.Wearable) {
+            return (ItemWearable)this;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ItemActionable castIfActionable() {
+        if (this.itemType == ItemTypes.Actionable) {
+            return (ItemActionable)this;
+        }
+        else {
+            return null;
+        }
+    }
+
+
 
     /**
      * Retrieves sprite
@@ -87,7 +116,7 @@ public class ItemBase implements Serializable {
      * Retrieves ID of item
      * @return item ID
      */
-    public int getItemID() {
+    public UUID getItemID() {
         return this.itemID;
     }
 
@@ -95,7 +124,7 @@ public class ItemBase implements Serializable {
      * Retrieves Item type ID
      * @return type ID
      */
-    public ItemTypes getItemTypeID() {
+    public ItemTypes getItemType() {
         return this.itemType;
     }
 

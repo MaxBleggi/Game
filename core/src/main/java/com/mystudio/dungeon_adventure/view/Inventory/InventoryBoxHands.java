@@ -11,7 +11,7 @@ public class InventoryBoxHands extends InventoryBoxGeneric {
         super.width = width;
         super.height = height;
         super.sprite = null;
-        super.itemID = -1;
+        super.itemID = null;
 
         this.isLeftHand = isLeftHand;
     }

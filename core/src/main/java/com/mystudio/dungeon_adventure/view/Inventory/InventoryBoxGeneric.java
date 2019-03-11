@@ -7,6 +7,8 @@ import com.mystudio.dungeon_adventure.helpers.ItemTypes;
 import com.mystudio.dungeon_adventure.helpers.Wearables;
 import org.mini2Dx.core.graphics.Sprite;
 
+import java.util.UUID;
+
 public class InventoryBoxGeneric {
     protected int x;
     protected int y;
@@ -20,7 +22,7 @@ public class InventoryBoxGeneric {
     protected Sprite sprite;
 
     // keep track of what item is assigned to box
-    protected int itemID;
+    protected UUID itemID;
 
 
     /* - - -    Constructors    - - - */
@@ -31,7 +33,7 @@ public class InventoryBoxGeneric {
         this.width = width;
         this.height = height;
         this.sprite = null;
-        this.itemID = InventoryWindowUI.NO_BOX;
+        this.itemID = null;
     }
 
     public InventoryBoxGeneric() {
@@ -50,7 +52,7 @@ public class InventoryBoxGeneric {
      * Retrieves the ID of the item from this box
      * @return Unique item ID
      */
-    public int getItem() {
+    public UUID getItem() {
         return this.itemID;
     }
 
@@ -61,17 +63,17 @@ public class InventoryBoxGeneric {
      * Removes item from slot. Returns that item if it existed
      * @return itemID if available, NO_BOX otherwise
      */
-    public int removeItemIfNotEmpty() {
+    public UUID removeItemIfNotEmpty() {
         if (hasItem()) {
             this.sprite = null;
             this.itemType = null;
 
-            int tmp = this.itemID;
-            this.itemID = InventoryWindowUI.NO_BOX;
+            UUID tmp = this.itemID;
+            this.itemID = null;
 
             return tmp;
         }
-        return InventoryWindowUI.NO_BOX;
+        return null;
     }
 
     /**
@@ -80,7 +82,7 @@ public class InventoryBoxGeneric {
      * @param spritePath the file path of sprite resource
      * @return true if empty, false if not empty
      */
-    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
+    public boolean placeItemIfEmpty(UUID itemID, ItemTypes itemType, Wearables bodyPart, String spritePath) {
         if (!hasItem() && itemType != null && bodyPart != null) {
             this.itemID = itemID;
             this.itemType = itemType;
@@ -101,7 +103,7 @@ public class InventoryBoxGeneric {
      * @param sprite sprite of the item
      * @return true if empty, false is not empty
      */
-    public boolean placeItemIfEmpty(int itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
+    public boolean placeItemIfEmpty(UUID itemID, ItemTypes itemType, Wearables bodyPart, Sprite sprite) {
 
         if (!hasItem() && sprite != null && itemType != null && bodyPart != null) {
             this.itemID = itemID;

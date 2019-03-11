@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.mystudio.dungeon_adventure.helpers.GameConstants;
-import com.mystudio.dungeon_adventure.helpers.SaveState;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemActionable;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemGeneric;
+import com.mystudio.dungeon_adventure.data.Inventory.ItemWearable;
+import com.mystudio.dungeon_adventure.helpers.*;
 import com.mystudio.dungeon_adventure.data.Player.PlayerBasicClass;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.game.GameContainer;
@@ -62,6 +64,34 @@ public class DungeonScreen extends BasicGameScreen {
 
         sprite.setSize(15,20);
         this.point.set(TILE_SIZE*4,TILE_SIZE*4);
+
+
+
+        // TODO delete: this is for debugging
+
+       // this.player.inventory
+
+        ItemWearable w1 = new ItemWearable("w1", "desc", Rarity.COMMON, Wearables.HEAD, "player.png");
+        ItemWearable torso = new ItemWearable("w2", "desc", Rarity.COMMON, Wearables.TORSO, "player.png");
+        ItemActionable a1 = new ItemActionable("a1", "desc", Rarity.COMMON, Actionables.SWORD, "player.png");
+        ItemActionable a2 = new ItemActionable("a2", "desc", Rarity.COMMON, Actionables.SWORD, "player.png");
+        ItemGeneric b1 = new ItemGeneric("b1", "desc", Rarity.COMMON, "player.png");
+        ItemGeneric b2 = new ItemGeneric("b2", "desc", Rarity.COMMON, "player.png");
+
+        System.out.println(w1.getItemID());
+        System.out.println(torso.getItemID());
+        System.out.println(b1.getItemID());
+        System.out.println(b2.getItemID());
+
+        this.player.inventory.addItemToInventory(w1, 0);
+        this.player.inventory.addItemToInventory(torso, 1);
+        this.player.inventory.addItemToInventory(a1, 3);
+        this.player.inventory.addItemToInventory(a2, 5);
+        this.player.inventory.addItemToInventory(b1, 7);
+        this.player.inventory.addItemToInventory(b2, 11);
+        SaveState.saveObject(player, SaveState.PLAYER_SAVE_STATE);
+
+        // **********************************
     }
 
     @Override
